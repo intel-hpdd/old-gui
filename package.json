@@ -1,6 +1,6 @@
 {
   "name": "@iml/chroma_ui",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "",
   "scripts": {
     "test": "karma start"
