@@ -19,9 +19,6 @@
 // otherwise. Any license under such intellectual property rights must be
 // express and approved by Intel in writing.
 
-
-/*global STATIC_URL */
-
 // Intended to house link builders and tag generators for common elements
 var UIHelper = function() {
 

@@ -8,9 +8,7 @@
     <$= t('storage_resource_detail.html') $>
     <$= t('volume_chooser_templates.html') $>
     <script type='text/javascript'>
-      // Take a javascript copy of the STATIC_URL variable
-      // so that we can access it from static .js code
-      var STATIC_URL = '<$= conf.STATIC_URL $>';
+      var STATIC_URL = '/old-gui/';
       var CACHE_INITIAL_DATA = <$= JSON.stringify(cache) $>;
       var HELP_TEXT = <$= JSON.stringify(conf.HELP_TEXT) $>;
       var UI_ROOT = "/ui/";
@@ -20,120 +18,120 @@
         'ui.bootstrap', 'services', 'filters', 'ui', 'directives', 'timing', 'exception'];
     </script>
 
-    <link rel="stylesheet" href="<$= conf.STATIC_URL $>css/base.css" type="text/css" />
-    <link rel="stylesheet" href="<$= conf.STATIC_URL $>css/header.css" type="text/css" />
-    <link href="<$= conf.STATIC_URL $>css/datatables.css" rel="stylesheet" type="text/css" />
-    <link href="<$= conf.STATIC_URL $>css/smoothness/jquery-ui.css"  rel="stylesheet" type="text/css" />
-    <link href="<$= conf.STATIC_URL $>css/smoothness/jquery-ui-extend.css"  rel="stylesheet" type="text/css" />
-    <link href="<$= conf.STATIC_URL $>css/BreadCrumb.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="/old-gui/css/base.css" type="text/css" />
+    <link rel="stylesheet" href="/old-gui/css/header.css" type="text/css" />
+    <link href="/old-gui/css/datatables.css" rel="stylesheet" type="text/css" />
+    <link href="/old-gui/css/smoothness/jquery-ui.css"  rel="stylesheet" type="text/css" />
+    <link href="/old-gui/css/smoothness/jquery-ui-extend.css"  rel="stylesheet" type="text/css" />
+    <link href="/old-gui/css/BreadCrumb.css" rel="stylesheet" type="text/css" />
 
-    <link href="<$= conf.STATIC_URL $>css/resource_graph.css" rel="stylesheet" type="text/css" />
-    <link rel="stylesheet" href="<$= conf.STATIC_URL $>css/target_detail.css" type='text/css' />
-    <link href="<$= conf.STATIC_URL $>css/storage_resource_detail.css" rel="stylesheet" type="text/css" />
-    <link rel="stylesheet" href="<$= conf.STATIC_URL $>css/filesystem_detail.css" type="text/css"/>
-    <link rel="stylesheet" href="<$= conf.STATIC_URL $>css/detail_screen.css" type='text/css' />
+    <link href="/old-gui/css/resource_graph.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="/old-gui/css/target_detail.css" type='text/css' />
+    <link href="/old-gui/css/storage_resource_detail.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="/old-gui/css/filesystem_detail.css" type="text/css"/>
+    <link rel="stylesheet" href="/old-gui/css/detail_screen.css" type='text/css' />
 
-    <link rel="stylesheet" href="<$= conf.STATIC_URL $>css/notifications.css" type='text/css' />
-    <link rel="stylesheet" href="<$= conf.STATIC_URL $>css/jquery.qtip.min.css" type='text/css' />
+    <link rel="stylesheet" href="/old-gui/css/notifications.css" type='text/css' />
+    <link rel="stylesheet" href="/old-gui/css/jquery.qtip.min.css" type='text/css' />
 
-    <link rel="stylesheet" href="<$= conf.STATIC_URL $>css/bootstrap/bootstrap.css" type="text/css"/>
-    <link rel="stylesheet" href="<$= conf.STATIC_URL $>css/bootstrap/bootstrap-extend.css" type="text/css"/>
-    <link rel="stylesheet" href="<$= conf.STATIC_URL $>css/font-awesome/font-awesome.css" type="text/css"/>
-    <link rel="stylesheet" href="<$= conf.STATIC_URL $>css/volume.css" type="text/css" />
-    <link rel="stylesheet" href="<$= conf.STATIC_URL $>css/power_control.css" type="text/css" />
-    <link rel="stylesheet" href="<$= conf.STATIC_URL $>css/outlet_info.css" type="text/css" />
-    <link rel="stylesheet" href="<$= conf.STATIC_URL $>css/create_pdu.css" type="text/css" />
-    <link rel="stylesheet" href="<$= conf.STATIC_URL $>js/modules/exception/assets/css/exception-dialog.css" type="text/css" />
-    <link rel="stylesheet" href="<$= conf.STATIC_URL $>js/modules/exception/assets/css/disconnect-dialog.css" type="text/css" />
+    <link rel="stylesheet" href="/old-gui/css/bootstrap/bootstrap.css" type="text/css"/>
+    <link rel="stylesheet" href="/old-gui/css/bootstrap/bootstrap-extend.css" type="text/css"/>
+    <link rel="stylesheet" href="/old-gui/css/font-awesome/font-awesome.css" type="text/css"/>
+    <link rel="stylesheet" href="/old-gui/css/volume.css" type="text/css" />
+    <link rel="stylesheet" href="/old-gui/css/power_control.css" type="text/css" />
+    <link rel="stylesheet" href="/old-gui/css/outlet_info.css" type="text/css" />
+    <link rel="stylesheet" href="/old-gui/css/create_pdu.css" type="text/css" />
+    <link rel="stylesheet" href="/old-gui/js/modules/exception/assets/css/exception-dialog.css" type="text/css" />
+    <link rel="stylesheet" href="/old-gui/js/modules/exception/assets/css/disconnect-dialog.css" type="text/css" />
 
-    <link rel="stylesheet" href="<$= conf.STATIC_URL $>js/lib/select-box-it/select-box-it.css" />
+    <link rel="stylesheet" href="/old-gui/js/lib/select-box-it/select-box-it.css" />
 
-    <link rel="icon" href="<$= conf.STATIC_URL $>images/intel.ico" />
+    <link rel="icon" href="/old-gui/images/intel.ico" />
 
     <!-- Frameworks -->
-    <script type="text/javascript" src="<$= conf.STATIC_URL $>js/lib/jquery.js"></script>
-    <script type="text/javascript" src="<$= conf.STATIC_URL $>js/lib/jquery-ui.js"></script>
-    <script type="text/javascript" src="<$= conf.STATIC_URL $>js/lib/highcharts.js"></script>
-    <script type="text/javascript" src="<$= conf.STATIC_URL $>js/lib/jquery.peity.js"></script>
-    <script type="text/javascript" src="<$= conf.STATIC_URL $>js/lib/lodash.custom.js"></script>
-    <script type="text/javascript" src="<$= conf.STATIC_URL $>js/lib/underscore-min.js"></script>
-    <script type="text/javascript" src="<$= conf.STATIC_URL $>js/lib/backbone-min.js"></script>
-    <script type="text/javascript" src="<$= conf.STATIC_URL $>js/lib/angular/angular.js"></script>
-    <script type="text/javascript" src="<$= conf.STATIC_URL $>js/lib/angular/angular-resource.js"></script>
-    <script type="text/javascript" src="<$= conf.STATIC_URL $>js/lib/angular/ui-bootstrap.js"></script>
-    <script type="text/javascript" src="<$= conf.STATIC_URL $>js/lib/angular/angular-ui.js"></script>
-    <script type="text/javascript" src="<$= conf.STATIC_URL $>js/lib/sprintf/sprintf.js"></script>
-    <script type="text/javascript" src="<$= conf.STATIC_URL $>js/app.js"></script>
-    <script type="text/javascript" src="<$= conf.STATIC_URL $>js/app-compatibility.js"></script>
-    <script type="text/javascript" src="<$= conf.STATIC_URL $>js/constants.js"></script>
-    <script type="text/javascript" src="<$= conf.STATIC_URL $>js/interceptors/interceptor_module.js"></script>
-    <script type="text/javascript" src="<$= conf.STATIC_URL $>js/interceptors/tastypie.js"></script>
-    <script type="text/javascript" src="<$= conf.STATIC_URL $>js/interceptors/clean-request-url.js"></script>
-    <script type="text/javascript" src="<$= conf.STATIC_URL $>js/controllers/controller_module.js"></script>
-    <script type="text/javascript" src="<$= conf.STATIC_URL $>js/controllers/power_control.js"></script>
-    <script type="text/javascript" src="<$= conf.STATIC_URL $>js/controllers/dialogs/create_pdu.js"></script>
-    <script type="text/javascript" src="<$= conf.STATIC_URL $>js/controllers/dialogs/create_bmc.js"></script>
-    <script type="text/javascript" src="<$= conf.STATIC_URL $>js/models/models_module.js"></script>
-    <script type="text/javascript" src="<$= conf.STATIC_URL $>js/models/base_model.js"></script>
-    <script type="text/javascript" src="<$= conf.STATIC_URL $>js/models/power_control_device.js"></script>
-    <script type="text/javascript" src="<$= conf.STATIC_URL $>js/models/power_control_device_outlet.js"></script>
-    <script type="text/javascript" src="<$= conf.STATIC_URL $>js/models/power_control_type.js"></script>
-    <script type="text/javascript" src="<$= conf.STATIC_URL $>js/models/host.js"></script>
-    <script type="text/javascript" src="<$= conf.STATIC_URL $>js/services/services_module.js"></script>
-    <script type="text/javascript" src="<$= conf.STATIC_URL $>js/services/compile_template.js"></script>
-    <script type="text/javascript" src="<$= conf.STATIC_URL $>js/services/safe_apply.js"></script>
-    <script type="text/javascript" src="<$= conf.STATIC_URL $>js/services/paging.js"></script>
-    <script type="text/javascript" src="<$= conf.STATIC_URL $>js/services/generate_command_dropdown.js"></script>
-    <script type="text/javascript" src="<$= conf.STATIC_URL $>js/services/interval.js"></script>
-    <script type="text/javascript" src="<$= conf.STATIC_URL $>js/services/page-title.js"></script>
-    <script type="text/javascript" src="<$= conf.STATIC_URL $>js/filters/filters_module.js"></script>
-    <script type="text/javascript" src="<$= conf.STATIC_URL $>js/filters/capitalize.js"></script>
-    <script type="text/javascript" src="<$= conf.STATIC_URL $>js/directives/directive_module.js"></script>
-    <script type="text/javascript" src="<$= conf.STATIC_URL $>js/directives/context_tooltip.js"></script>
-    <script type="text/javascript" src="<$= conf.STATIC_URL $>js/directives/command-dropdown.js"></script>
-    <script type="text/javascript" src="<$= conf.STATIC_URL $>js/directives/power_control_autocomplete.js"></script>
+    <script type="text/javascript" src="/old-gui/js/lib/jquery.js"></script>
+    <script type="text/javascript" src="/old-gui/js/lib/jquery-ui.js"></script>
+    <script type="text/javascript" src="/old-gui/js/lib/highcharts.js"></script>
+    <script type="text/javascript" src="/old-gui/js/lib/jquery.peity.js"></script>
+    <script type="text/javascript" src="/old-gui/js/lib/lodash.custom.js"></script>
+    <script type="text/javascript" src="/old-gui/js/lib/underscore-min.js"></script>
+    <script type="text/javascript" src="/old-gui/js/lib/backbone-min.js"></script>
+    <script type="text/javascript" src="/old-gui/js/lib/angular/angular.js"></script>
+    <script type="text/javascript" src="/old-gui/js/lib/angular/angular-resource.js"></script>
+    <script type="text/javascript" src="/old-gui/js/lib/angular/ui-bootstrap.js"></script>
+    <script type="text/javascript" src="/old-gui/js/lib/angular/angular-ui.js"></script>
+    <script type="text/javascript" src="/old-gui/js/lib/sprintf/sprintf.js"></script>
+    <script type="text/javascript" src="/old-gui/js/app.js"></script>
+    <script type="text/javascript" src="/old-gui/js/app-compatibility.js"></script>
+    <script type="text/javascript" src="/old-gui/js/constants.js"></script>
+    <script type="text/javascript" src="/old-gui/js/interceptors/interceptor_module.js"></script>
+    <script type="text/javascript" src="/old-gui/js/interceptors/tastypie.js"></script>
+    <script type="text/javascript" src="/old-gui/js/interceptors/clean-request-url.js"></script>
+    <script type="text/javascript" src="/old-gui/js/controllers/controller_module.js"></script>
+    <script type="text/javascript" src="/old-gui/js/controllers/power_control.js"></script>
+    <script type="text/javascript" src="/old-gui/js/controllers/dialogs/create_pdu.js"></script>
+    <script type="text/javascript" src="/old-gui/js/controllers/dialogs/create_bmc.js"></script>
+    <script type="text/javascript" src="/old-gui/js/models/models_module.js"></script>
+    <script type="text/javascript" src="/old-gui/js/models/base_model.js"></script>
+    <script type="text/javascript" src="/old-gui/js/models/power_control_device.js"></script>
+    <script type="text/javascript" src="/old-gui/js/models/power_control_device_outlet.js"></script>
+    <script type="text/javascript" src="/old-gui/js/models/power_control_type.js"></script>
+    <script type="text/javascript" src="/old-gui/js/models/host.js"></script>
+    <script type="text/javascript" src="/old-gui/js/services/services_module.js"></script>
+    <script type="text/javascript" src="/old-gui/js/services/compile_template.js"></script>
+    <script type="text/javascript" src="/old-gui/js/services/safe_apply.js"></script>
+    <script type="text/javascript" src="/old-gui/js/services/paging.js"></script>
+    <script type="text/javascript" src="/old-gui/js/services/generate_command_dropdown.js"></script>
+    <script type="text/javascript" src="/old-gui/js/services/interval.js"></script>
+    <script type="text/javascript" src="/old-gui/js/services/page-title.js"></script>
+    <script type="text/javascript" src="/old-gui/js/filters/filters_module.js"></script>
+    <script type="text/javascript" src="/old-gui/js/filters/capitalize.js"></script>
+    <script type="text/javascript" src="/old-gui/js/directives/directive_module.js"></script>
+    <script type="text/javascript" src="/old-gui/js/directives/context_tooltip.js"></script>
+    <script type="text/javascript" src="/old-gui/js/directives/command-dropdown.js"></script>
+    <script type="text/javascript" src="/old-gui/js/directives/power_control_autocomplete.js"></script>
 
-    <script type="text/javascript" src="<$= conf.STATIC_URL $>js/modules/exception/exception-module.js"></script>
-    <script type="text/javascript" src="<$= conf.STATIC_URL $>js/modules/exception/exception-handler.js"></script>
-    <script type="text/javascript" src="<$= conf.STATIC_URL $>js/modules/exception/exception-dialog.js"></script>
-    <script type="text/javascript" src="<$= conf.STATIC_URL $>js/modules/exception/exception-dialog-controller.js"></script>
-    <script type="text/javascript" src="<$= conf.STATIC_URL $>js/modules/exception/exception-interceptor.js"></script>
-    <script type="text/javascript" src="<$= conf.STATIC_URL $>js/modules/exception/client-error-model.js"></script>
-    <script type="text/javascript" src="<$= conf.STATIC_URL $>js/modules/exception/disconnect-handler.js"></script>
-    <script type="text/javascript" src="<$= conf.STATIC_URL $>js/modules/exception/disconnect-dialog.js"></script>
-    <script type="text/javascript" src="<$= conf.STATIC_URL $>js/modules/exception/replay.js"></script>
+    <script type="text/javascript" src="/old-gui/js/modules/exception/exception-module.js"></script>
+    <script type="text/javascript" src="/old-gui/js/modules/exception/exception-handler.js"></script>
+    <script type="text/javascript" src="/old-gui/js/modules/exception/exception-dialog.js"></script>
+    <script type="text/javascript" src="/old-gui/js/modules/exception/exception-dialog-controller.js"></script>
+    <script type="text/javascript" src="/old-gui/js/modules/exception/exception-interceptor.js"></script>
+    <script type="text/javascript" src="/old-gui/js/modules/exception/client-error-model.js"></script>
+    <script type="text/javascript" src="/old-gui/js/modules/exception/disconnect-handler.js"></script>
+    <script type="text/javascript" src="/old-gui/js/modules/exception/disconnect-dialog.js"></script>
+    <script type="text/javascript" src="/old-gui/js/modules/exception/replay.js"></script>
 
-    <script type="text/javascript" src="<$= conf.STATIC_URL $>js/lib/json2.js"></script>
-    <script type="text/javascript" src="<$= conf.STATIC_URL $>js/misc.js"></script>
+    <script type="text/javascript" src="/old-gui/js/lib/json2.js"></script>
+    <script type="text/javascript" src="/old-gui/js/misc.js"></script>
     <script type='text/javascript'>
       window.TIME_OFFSET = Math.round((new Date(<$= getServerDate().getTime() $>) - new Date()) / 1000);
     </script>
 
     <!-- Plugins -->
-    <script type="text/javascript" src="<$= conf.STATIC_URL $>js/lib/jquery.blockUI.js"></script>
-    <script type="text/javascript" src="<$= conf.STATIC_URL $>js/lib/jquery.dataTables.js"></script>
-    <script type="text/javascript" src="<$= conf.STATIC_URL $>js/lib/jquery.qtip.min.js"></script>
-    <script type="text/javascript" src="<$= conf.STATIC_URL $>js/lib/select-box-it/select-box-it.js"></script>
+    <script type="text/javascript" src="/old-gui/js/lib/jquery.blockUI.js"></script>
+    <script type="text/javascript" src="/old-gui/js/lib/jquery.dataTables.js"></script>
+    <script type="text/javascript" src="/old-gui/js/lib/jquery.qtip.min.js"></script>
+    <script type="text/javascript" src="/old-gui/js/lib/select-box-it/select-box-it.js"></script>
 
     <!-- Application (toplevel) -->
-    <script type="text/javascript" src="<$= conf.STATIC_URL $>js/ui_tools.js"></script>
-    <script type="text/javascript" src="<$= conf.STATIC_URL $>js/abort-on-unload.js"></script>
-    <script type="text/javascript" src="<$= conf.STATIC_URL $>js/api.js"></script>
-    <script type="text/javascript" src="<$= conf.STATIC_URL $>js/api_cache.js"></script>
-    <script type="text/javascript" src="<$= conf.STATIC_URL $>js/router.js"></script>
-    <script type="text/javascript" src="<$= conf.STATIC_URL $>js/login.js"></script>
-    <script type="text/javascript" src="<$= conf.STATIC_URL $>js/notifications.js" ></script>
-    <script type="text/javascript" src="<$= conf.STATIC_URL $>js/highcharts_theme.js"></script>
-    <script type="text/javascript" src="<$= conf.STATIC_URL $>js/help.js"></script>
-    <script type="text/javascript" src="<$= conf.STATIC_URL $>js/conf_params.js"></script>
-    <script type="text/javascript" src="<$= conf.STATIC_URL $>js/chart_manager.js"></script>
-    <script type="text/javascript" src="<$= conf.STATIC_URL $>js/text_updater.js"></script>
+    <script type="text/javascript" src="/old-gui/js/ui_tools.js"></script>
+    <script type="text/javascript" src="/old-gui/js/abort-on-unload.js"></script>
+    <script type="text/javascript" src="/old-gui/js/api.js"></script>
+    <script type="text/javascript" src="/old-gui/js/api_cache.js"></script>
+    <script type="text/javascript" src="/old-gui/js/router.js"></script>
+    <script type="text/javascript" src="/old-gui/js/login.js"></script>
+    <script type="text/javascript" src="/old-gui/js/notifications.js" ></script>
+    <script type="text/javascript" src="/old-gui/js/highcharts_theme.js"></script>
+    <script type="text/javascript" src="/old-gui/js/help.js"></script>
+    <script type="text/javascript" src="/old-gui/js/conf_params.js"></script>
+    <script type="text/javascript" src="/old-gui/js/chart_manager.js"></script>
+    <script type="text/javascript" src="/old-gui/js/text_updater.js"></script>
 
     <!-- Application (individual panes) -->
-    <script type='text/javascript' src="<$= conf.STATIC_URL $>js/user_detail.js"></script>
-    <script type='text/javascript' src="<$= conf.STATIC_URL $>js/target_detail.js"></script>
-    <script type="text/javascript" src="<$= conf.STATIC_URL $>js/storage_resource_detail.js"></script>
-    <script type="text/javascript" src="<$= conf.STATIC_URL $>js/system_status.js"></script>
+    <script type='text/javascript' src="/old-gui/js/user_detail.js"></script>
+    <script type='text/javascript' src="/old-gui/js/target_detail.js"></script>
+    <script type="text/javascript" src="/old-gui/js/storage_resource_detail.js"></script>
+    <script type="text/javascript" src="/old-gui/js/system_status.js"></script>
 
     <!-- Templates -->
     <$= t('system_status.html') $>
@@ -183,8 +181,8 @@
       </noscript>
       <div class='rightpanel'>
         <div class="toplevel" id='toplevel-configure' style="display: none;">
-          <script type="text/javascript" src="<$= conf.STATIC_URL $>js/configure_charts.js"></script>
-          <script type='text/javascript' src="<$= conf.STATIC_URL $>js/filesystem_configuration.js"></script>
+          <script type="text/javascript" src="/old-gui/js/configure_charts.js"></script>
+          <script type='text/javascript' src="/old-gui/js/filesystem_configuration.js"></script>
           <$= t('configuration.html') $>
         </div>
         <div class="toplevel" id='toplevel-system_status' style="display: none;"></div>
