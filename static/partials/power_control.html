@@ -27,8 +27,8 @@
         </tr>
       </thead>
       <tbody>
-        <tr ng-repeat="host in powerCtrl.hosts | orderBy: 'nodename'">
-          <td>((host.nodename))</td>
+        <tr ng-repeat="host in powerCtrl.hosts | orderBy: 'fqdn'">
+          <td>((host.fqdn))</td>
           <td class="outlets" ng-repeat="device in powerCtrl.powerControlDevices | orderBy: 'name'">
             <button ng-click="powerCtrl.createBmc(device, host)" ng-show="!host.hasOutlets(powerCtrl.powerControlDevices) && device.isIpmi() && device.getOutletHostIntersection(host).length === 0" class="btn"><i class="icon-plus"></i> Add BMC</button>
             <div ng-hide="(!device.isIpmi() && host.hasIpmi(powerCtrl.powerControlDevices)) || (device.isIpmi() && device.getOutletHostIntersection(host).length === 0)">
