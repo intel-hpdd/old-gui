@@ -1,11 +1,8 @@
-node_modules
-.editorconfig
-.babelrc
 .gitignore
+karma.conf.js
 *.log
 /test
 /coverage
 /bin
 run_test.sh
 yarn.lock
-README.md
