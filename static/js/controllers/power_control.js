@@ -24,7 +24,6 @@
   'use strict';
 
   function PowerCtrl($scope, $dialog, $q, hostModel, PowerControlDeviceModel, pageTitle) {
-    $scope.$emit('blockUi', {fadeIn: true, message: null});
 
     pageTitle.set('Configuration - Power Control');
 
@@ -77,17 +76,14 @@
        * @param {PowerControlDeviceModel} device
        */
       deletePdu: function (device) {
-        $scope.$emit('blockUi', {fadeIn: true, message: null});
         device.$delete().then(function success() {
           var deviceIndex = this.powerControlDevices.indexOf(device);
           this.powerControlDevices.splice(deviceIndex, 1);
-          $scope.$emit('unblockUi');
         }.bind(this));
       }
     };
 
     $q.all([$scope.powerCtrl.hosts.$promise, $scope.powerCtrl.powerControlDevices.$promise]).then(function () {
-      $scope.$emit('unblockUi');
     });
   }
 
@@ -95,5 +91,3 @@
     ['$scope', '$dialog', '$q', 'hostModel', 'PowerControlDeviceModel', 'pageTitle', PowerCtrl]
   );
 }());
-
-

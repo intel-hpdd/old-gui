@@ -32,7 +32,6 @@
       if (resp.status === 400)
         $scope.createPduCtrl.err = angular.isString(resp.data) ? {__all__: [resp.data]} : resp.data;
 
-      $scope.$emit('unblockUi');
     }
 
     $scope.createPduCtrl = {
@@ -49,11 +48,9 @@
       extension = {
         form: angular.copy(device),
         submit: function (data) {
-          $scope.$emit('blockUi', {fadeIn: true, message: null});
           data.$update().then(function success(resp) {
             angular.copy(resp, device);
             dialog.close();
-            $scope.$emit('unblockUi');
           }, errback);
         },
         type: 'edit',
@@ -68,12 +65,10 @@
       extension = {
         form: {},
         submit: function (data) {
-          $scope.$emit('blockUi', {fadeIn: true, message: null});
           PowerControlDeviceModel.save(data).$promise.then(function success() {
             PowerControlDeviceModel.query().$promise.then(function success(resp) {
               angular.copy(resp, devices);
               dialog.close();
-              $scope.$emit('unblockUi');
             });
           }, errback);
         },

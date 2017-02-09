@@ -88,7 +88,6 @@ var Api = function() {
     if (enable) {
       enable_overlay = false;
       jQuery.fx.off = true;
-      $.unblockUI();
     } else {
       enable_overlay = true;
     }
@@ -104,9 +103,6 @@ var Api = function() {
     //
     // outstanding_requests += 1;
     // if (outstanding_requests == 1 && enable_overlay) {
-    //   $.blockUI({
-    //     message: ""
-    //   });
     // }
   }
 
@@ -118,7 +114,6 @@ var Api = function() {
     //
     // outstanding_requests -= 1;
     // if (outstanding_requests == 0 && enable_overlay) {
-    //   $.unblockUI();
     // }
   }
 
@@ -204,10 +199,6 @@ var Api = function() {
 
     /* NB: we 'reload' them back to the base URL because a malformed URL is a possible
      * cause of errors (e.g. if the hash had a bad ID in it) */
-    $.blockUI({
-      message: message,
-      css: {padding: "6px", "font-size": "9pt", "text-align": "left"}
-    });
   }
 
   /* A rejected request (400) -- assume that this was
