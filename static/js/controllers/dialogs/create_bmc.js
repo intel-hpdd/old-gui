@@ -32,17 +32,14 @@
       if (resp.status === 400)
         $scope.createBmcCtrl.err = angular.isString(resp.data) ? {__all__: [resp.data]} : resp.data;
 
-      $scope.$emit('unblockUi');
     }
 
     $scope.createBmcCtrl = {
       form: {device: device.resource_uri, host: host.resource_uri},
       submit: function (data) {
-        $scope.$emit('blockUi', {fadeIn: true, message: null});
         PowerControlDeviceOutlet.save(data).$promise.then(function success(resp) {
           device.outlets.push(resp);
           dialog.close();
-          $scope.$emit('unblockUi');
         }, errback);
       },
       title: 'New BMC',
