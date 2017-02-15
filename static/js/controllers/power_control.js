@@ -82,9 +82,6 @@
         }.bind(this));
       }
     };
-
-    $q.all([$scope.powerCtrl.hosts.$promise, $scope.powerCtrl.powerControlDevices.$promise]).then(function () {
-    });
   }
 
   angular.module('controllers').controller('PowerCtrl',

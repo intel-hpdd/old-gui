@@ -95,28 +95,6 @@ var Api = function() {
     return "rhubarb"
   }
 
-  function startBlocking()
-  {
-    // if (errored) {
-    //   return;
-    // }
-    //
-    // outstanding_requests += 1;
-    // if (outstanding_requests == 1 && enable_overlay) {
-    // }
-  }
-
-  function completeBlocking()
-  {
-    // if (errored) {
-    //   return;
-    // }
-    //
-    // outstanding_requests -= 1;
-    // if (outstanding_requests == 0 && enable_overlay) {
-    // }
-  }
-
   function enable()
   {
     api_available = true;
@@ -193,12 +171,17 @@ var Api = function() {
       message += "<dt>" + key + ":</dt><dd>" + s + "</dd>";
     });
     message += "</dl>";
-    message += "<p style='text-align: center'>"
-    message += "<a href='" + UI_ROOT + "' target='_top'>Reload</a>"
-    message += "</p>"
 
     /* NB: we 'reload' them back to the base URL because a malformed URL is a possible
      * cause of errors (e.g. if the hash had a bad ID in it) */
+    $(`<div class='error_dialog'><h2>Error</h2>${message}</div>`).dialog({
+      buttons: {
+        Reload: {
+          text: 'Reload',
+          click: () => window.top.location = UI_ROOT
+        }
+      }
+    })
   }
 
   /* A rejected request (400) -- assume that this was
@@ -386,10 +369,6 @@ var Api = function() {
       ajax_args.cache = cache;
     }
 
-    if (blocking) {
-      startBlocking();
-    }
-
     return $.ajax(ajax_args)
     .success(function(data, textStatus, jqXHR)
     {
@@ -464,12 +443,6 @@ var Api = function() {
         }
       } else {
         unexpectedError(jqXHR);
-      }
-    })
-    .complete(function(event)
-    {
-      if (blocking) {
-        completeBlocking();
       }
     });
   };

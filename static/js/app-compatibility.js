@@ -24,8 +24,6 @@
   'use strict';
 
   angular.module('iml')
-    .run(['$rootScope', function ($rootScope) {
-    }])
     // TODO: ngInclude -> $anchorScroll -> $location. We do not use $anchorScroll and we do not want to import
     // location as it conflicts with Backbone's router. Remove this when routing goes through Angular.
     .value('$anchorScroll', null)
