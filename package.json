@@ -7,10 +7,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.intel.com/IML/old-gui.git"
+    "url": "https://github.com/intel-hpdd/old-gui.git"
   },
   "publishConfig": {
-    "registry": "https://ubit-artifactory-or.intel.com/artifactory/api/npm/iml-npm-local"
+    "access": "public"
   },
   "devDependencies": {
     "jasmine-core": "2.4.1",
