@@ -50,8 +50,8 @@
 <script type='text/template' id='user_alert_subs_form'>
     Select the types of event for which you wish to receive emailed notifications:
     <ul class="alert_selection_list" id="user_alerts_form">
-        <% _.each(subscriptions, function(vals, id) { %>
-            <li><input type='checkbox' name=<%= vals.type.safe_name %> <%= vals.subscribed ? 'checked' : '' %>/>&nbsp;<%= vals.type.description %></li>
+        <%  Object.keys(subscriptions).forEach(function(id) { %>
+            <li><input type='checkbox' name=<%= subscriptions[id].type.safe_name %> <%= subscriptions[id].subscribed ? 'checked' : '' %>/>&nbsp;<%= subscriptions[id].type.description %></li>
         <% }) %>
     </ul>
     <table>

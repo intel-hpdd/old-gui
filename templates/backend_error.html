@@ -1,22 +1,23 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <link rel="stylesheet" href="<$= conf.staticUrl $>css/base.css" type="text/css" />
-    <link rel="stylesheet" href="<$= conf.staticUrl $>css/header.css" type="text/css" />
-    <title>Intel&reg; Manager for Lustre* software</title>
-  </head>
 
-  <body>
-    <div class="logohead">
-      <a class="navigation" href="">
-        <div class="logo"></div>
-      </a>
-    </div>
-    <div class="content">
-      <p>
-        A fatal error has occurred. Please contact support with the following information.
-      </p>
-      <pre style="border: 2px solid red; word-wrap: break-word; margin-right: 0.5em;">
+<head>
+  <link rel="stylesheet" href="<$= conf.staticUrl $>css/base.css" type="text/css" />
+  <link rel="stylesheet" href="<$= conf.staticUrl $>css/header.css" type="text/css" />
+  <title>Intel&reg; Manager for Lustre* software</title>
+</head>
+
+<body>
+  <div class="logohead">
+    <a class="navigation" href="">
+      <div class="logo"></div>
+    </a>
+  </div>
+  <div class="content">
+    <p>
+      A fatal error has occurred. Please contact support with the following information.
+    </p>
+    <pre style="border: 2px solid red; word-wrap: break-word; margin-right: 0.5em;">
 <h2>[description]</h2>
 <p><$- description $></p>
 <h2>[debug]</h2>
@@ -25,10 +26,11 @@
 <p>version: <$= conf.VERSION $></p>
 <p>is release: <$= conf.IS_RELEASE $></p>
 <p>fqdn: <$= conf.HOST_NAME $></p>
-<$ _.forEach(debug_info, function(v, k) { $>
-<p><$- k $>: <$- v $></p>
+<$ Object.keys(debug_info).forEach(function(k) { $>
+<p><$- k $>: <$- debug_info[k] $></p>
 <$ }); $>
       </pre>
-    </div>
-  </body>
+  </div>
+</body>
+
 </html>

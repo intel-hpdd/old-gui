@@ -51,7 +51,7 @@
 
 <script type='text/template' id='storage_resource_list_template'>
     <table>
-        <% _.each(storage_resources, function(resource) { %>
+        <% storage_resources.forEach(function(resource) { %>
         <tr>
             <td><%= RouteUtils.uri_properties_link(resource.resource_uri, resource.alias) %></td>
             <td><%= LiveObject.alertIcon(resource) %> </td>

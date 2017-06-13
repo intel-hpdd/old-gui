@@ -1,0 +1,11 @@
+language: node_js
+node_js:
+- '6'
+deploy:
+  provider: npm
+  email: joe.grund@intel.com
+  api_key:
+    secure: LgMJEKi4UkJScte/VyTUL47DntdaWTEvYF+DVDqFag2yDA7SyJiIYNNUFveS0wkkTkjYRPsaND1+l7CKLwGl62ZTi+esU3FFf15J897CoDUmm6NjVA0CET1LAx7N6XSs+pKe3/86drodcQzztPKko/EvTfgFYrIMslv1hi3xLyQUAJd5uzktrjjat5GVA1VSIUnmTowE7uGBUQRKa2vF4UfNfaRWGgWsVCebYVO6oaF22xtWHjbcdp5Kr6pIkatYVj9PnN8mO/sPIAGxrTMq0OBbz89pnm7HDhO1+f4JsA7BqsPDf8P+OIAHelWARePVZ+jC7U4ffADHV/A+haYTwxVGd8LUhvBOfvEvAbVqS6AtI223nz46IwCbPnIJwPYPx49oX9v6ZJBBAgDhf7gPLPcBIfbeh3GvjrYJ/Zkvcnb4Ai9cn0yVszKjxEuEKK+lLERlNRzcTZFjYn7UBSPs0UqDN4yftGjoLSi1fvXTJz3eRojVrjBm4gyWGwPuYtpNvBL6BxFFB4BJp0vcH8WwzsmBDs3VTmHm5wC6TsES4MsuTK57AvxM9HT5nqOOLxBevL1Mdnsho1TiGF4Tty65/5n7TLsjg1qGTLfQV/lT3vNAGgi+Q8+tXOrvYD4RzA2omV0udfmpGX8xFWPcCbqVInQ3N/AGxerm1vlu9LK7FEE=
+  on:
+    tags: true
+    repo: intel-hpdd/old-gui
