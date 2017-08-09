@@ -6,3 +6,5 @@ karma.conf.js
 /bin
 run_test.sh
 yarn.lock
+.travis.yml
+.npmignore

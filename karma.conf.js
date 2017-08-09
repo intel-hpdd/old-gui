@@ -1,7 +1,7 @@
 // Testacular configuration
 
 // list of files / patterns to load in the browser
-module.exports = function(config) {
+module.exports = function (config) {
   config.set({
 
     basePath: '',
@@ -15,7 +15,6 @@ module.exports = function(config) {
       'static/js/lib/angular/angular.js',
       'static/js/lib/angular/angular-resource.js',
       'static/js/lib/angular/ui-bootstrap.js',
-      'static/js/lib/highcharts.js',
       'test/lib/angular-mocks.js',
       'static/js/lib/sprintf/*.js',
       'static/js/app/help.js',
@@ -34,7 +33,6 @@ module.exports = function(config) {
       'static/js/controllers/**/*.js',
       'static/js/directives/directive_module.js',
       'static/js/directives/*.js',
-      'static/js/chart_manager.js',
       'test/mocks/mock.js',
       'test/mocks/**/*.js',
       'test/mocks/register-mocks.js',
