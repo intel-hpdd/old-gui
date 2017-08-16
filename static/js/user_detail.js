@@ -19,12 +19,11 @@
 // otherwise. Any license under such intellectual property rights must be
 // express and approved by Intel in writing.
 
-
 var User = Backbone.Model.extend({
-  urlRoot: "/api/user/"
+  urlRoot: '/api/user/'
 });
 
-var UserAlertSubscriptions = function() {
+var UserAlertSubscriptions = (function() {
   // Simple caching -- api_cache.js won't work because AlertType is a
   // synthetic resource (no table behind it, so no queryset to cache).
   var alert_types = null;
@@ -32,7 +31,7 @@ var UserAlertSubscriptions = function() {
   function init(callback) {
     if (alert_types == null) {
       alert_types = {};
-      Api.get("/api/alert_type/", {limit: 0}, function(data) {
+      Api.get('/api/alert_type/', { limit: 0 }, function(data) {
         _.each(data.objects, function(type) {
           type.safe_name = _safe_name(type.description);
           alert_types[type.id] = type;
@@ -45,16 +44,20 @@ var UserAlertSubscriptions = function() {
   }
 
   function _safe_name(description) {
-    return description.toLowerCase().replace(/\s+/g,"_");
+    return description.toLowerCase().replace(/\s+/g, '_');
   }
 
   function _subscribed_type_ids(user) {
-    return _.pluck(_.pluck(user.get('alert_subscriptions'), 'alert_type'), 'id');
+    return _.pluck(
+      _.pluck(user.get('alert_subscriptions'), 'alert_type'),
+      'id'
+    );
   }
 
   function _type_name_to_id(alert_type_name) {
-    return _.find(alert_types,
-                  function(type){return type.safe_name === alert_type_name}).id;
+    return _.find(alert_types, function(type) {
+      return type.safe_name === alert_type_name;
+    }).id;
   }
 
   function get(user) {
@@ -62,9 +65,9 @@ var UserAlertSubscriptions = function() {
 
     _.each(alert_types, function(type, id) {
       if (_.include(_subscribed_type_ids(user), id)) {
-        type_subscriptions[id] = {'type': type, 'subscribed': true};
+        type_subscriptions[id] = { type: type, subscribed: true };
       } else {
-        type_subscriptions[id] = {'type': type, 'subscribed': false};
+        type_subscriptions[id] = { type: type, subscribed: false };
       }
     });
 
@@ -77,29 +80,33 @@ var UserAlertSubscriptions = function() {
 
     _.each(user.get('alert_subscriptions'), function(s) {
       var alert_name = _safe_name(s.alert_type.description);
-      if (!(_.include(selections, alert_name))) {
+      if (!_.include(selections, alert_name)) {
         to_delete.push(s.resource_uri);
       }
     });
 
     _.each(selections, function(type_name) {
       var type_id = _type_name_to_id(type_name);
-      if (!(_.include(_subscribed_type_ids(user), type_id))) {
-        to_add.push(
-          {user: user.get('resource_uri'),
-           alert_type: alert_types[type_id].resource_uri}
-        );
+      if (!_.include(_subscribed_type_ids(user), type_id)) {
+        to_add.push({
+          user: user.get('resource_uri'),
+          alert_type: alert_types[type_id].resource_uri
+        });
       }
     });
 
     if (to_delete.length > 0 || to_add.length > 0) {
-      Api.patch('/api/alert_subscription/', {objects: to_add,
-                                             deleted_objects: to_delete},
-                success_callback = function(status, jqXHR) {
-                  if (callback) {
-                    callback();
-                  }
-                }
+      Api.patch(
+        '/api/alert_subscription/',
+        {
+          objects: to_add,
+          deleted_objects: to_delete
+        },
+        (success_callback = function(status, jqXHR) {
+          if (callback) {
+            callback();
+          }
+        })
       );
     }
   }
@@ -108,8 +115,8 @@ var UserAlertSubscriptions = function() {
     init: init,
     get: get,
     set: set
-  }
-}();
+  };
+})();
 
 var UserDetail = Backbone.View.extend({
   className: 'user_detail',
@@ -122,19 +129,23 @@ var UserDetail = Backbone.View.extend({
         user: view.model.toJSON()
       });
       $(view.el).find('.ui-dialog-content').html(rendered);
-      $(view.el).find('.tabs').tabs({'show': function(event, ui) {view.tab_select(event, ui)}});
+      $(view.el).find('.tabs').tabs({
+        show: function(event, ui) {
+          view.tab_select(event, ui);
+        }
+      });
     });
     return this;
   },
 
   events: {
-    "click button.save_user": "save_user",
-    "click button.reset_user": "reset_user",
-    "click button.change_password": "change_password",
-    "click button.clear_subscriptions": "clear_subscriptions",
-    "click button.select_all_subscriptions": "select_all_subscriptions",
-    "click button.update_subscriptions": "update_subscriptions",
-    "click button.reset_subscriptions": "reset_subscriptions"
+    'click button.save_user': 'save_user',
+    'click button.reset_user': 'reset_user',
+    'click button.change_password': 'change_password',
+    'click button.clear_subscriptions': 'clear_subscriptions',
+    'click button.select_all_subscriptions': 'select_all_subscriptions',
+    'click button.update_subscriptions': 'update_subscriptions',
+    'click button.reset_subscriptions': 'reset_subscriptions'
   },
   save_user: function() {
     var view = this;
@@ -142,39 +153,45 @@ var UserDetail = Backbone.View.extend({
 
     var obj = view.model.toJSON();
 
-    if (obj.is_superuser) {
-      //@FIXME: This is not great but with lacking test coverage I'm not willing to alter save.
-      Object.defineProperty(obj, 'accepted_eula', {
-        value: !userDetailForm.find('input:checkbox')[0].checked,
-        writable: false
-      });
-    }
-
-    ValidatedForm.save(userDetailForm, Api.put, this.model.get('resource_uri'), obj, function() {
-      $(view.el).find('#user_save_result').html("Changes saved successfully.");
-      // Ensure that the model is updated for other tabs.
-      view.model.fetch();
-    });
+    ValidatedForm.save(
+      userDetailForm,
+      Api.put,
+      this.model.get('resource_uri'),
+      obj,
+      function() {
+        $(view.el)
+          .find('#user_save_result')
+          .html('Changes saved successfully.');
+        // Ensure that the model is updated for other tabs.
+        view.model.fetch();
+      }
+    );
   },
   reset_user: function() {
-    var userDetailForm = $(this.el).find(".user_detail_form");
+    var userDetailForm = $(this.el).find('.user_detail_form');
 
     ValidatedForm.reset(userDetailForm, this.model);
-
-    if (this.model.get('is_superuser')) {
-      userDetailForm.find('input:checkbox').prop('checked', !this.model.get('accepted_eula'));
-    }
   },
   change_password: function() {
     var view = this;
-    ValidatedForm.save($(this.el).find(".user_password_form"), Api.put, this.model.get('resource_uri'), this.model.toJSON(), function() {
-      ValidatedForm.clear($(view.el).find(".user_password_form"));
-      $(view.el).find('#password_change_result').html("Password updated successfully.");
-    });
+    ValidatedForm.save(
+      $(this.el).find('.user_password_form'),
+      Api.put,
+      this.model.get('resource_uri'),
+      this.model.toJSON(),
+      function() {
+        ValidatedForm.clear($(view.el).find('.user_password_form'));
+        $(view.el)
+          .find('#password_change_result')
+          .html('Password updated successfully.');
+      }
+    );
   },
   display_subscriptions: function(subscriptions) {
     var view = this;
-    var markup = _.template($('#user_alert_subs_form').html())({subscriptions: subscriptions});
+    var markup = _.template($('#user_alert_subs_form').html())({
+      subscriptions: subscriptions
+    });
     $(view.el).find('#user_alert_subs_tab').html(markup);
     // This .button() call forces the buttons to be styled on page load
     // rather than waiting for the next background alert poll.  Not exactly
@@ -184,13 +201,17 @@ var UserDetail = Backbone.View.extend({
   clear_subscriptions: function() {
     var user = this.model;
     var subscriptions = UserAlertSubscriptions.get(user);
-    _.each(subscriptions, function(vals, id) {vals.subscribed = false});
+    _.each(subscriptions, function(vals, id) {
+      vals.subscribed = false;
+    });
     this.display_subscriptions(subscriptions);
   },
   select_all_subscriptions: function() {
     var user = this.model;
     var subscriptions = UserAlertSubscriptions.get(user);
-    _.each(subscriptions, function(vals, id) {vals.subscribed = true});
+    _.each(subscriptions, function(vals, id) {
+      vals.subscribed = true;
+    });
     this.display_subscriptions(subscriptions);
   },
   reset_subscriptions: function() {
@@ -205,14 +226,16 @@ var UserDetail = Backbone.View.extend({
     var form = $(view.el).find('#user_alerts_form');
     var selections = [];
 
-    _.each(form.find("input[type=checkbox]:checked"), function(cb) {
+    _.each(form.find('input[type=checkbox]:checked'), function(cb) {
       selections.push(cb.name);
     });
 
     UserAlertSubscriptions.set(user, selections, function() {
       // refresh the model to update the list of alert subscriptions
       user.fetch();
-      $(view.el).find('#subscriptions_change_result').html("Subscriptions updated successfully.");
+      $(view.el)
+        .find('#subscriptions_change_result')
+        .html('Subscriptions updated successfully.');
     });
   },
   tab_select: function(event, ui) {
