@@ -502,7 +502,7 @@
       volumeDataTable.on('change', 'select', function hostChanged () {
         var selectId = $(this).attr('id');
         //Note : id is stored as part of the select element id E.g. primary_host_<id>
-        var id = selectId.split('_').pop();
+        var id = parseInt(selectId.split('_').pop());
 
         var volumes = volumeDataTable.fnGetData();
         var volumeFinder = getVolumeFinder(volumes);
