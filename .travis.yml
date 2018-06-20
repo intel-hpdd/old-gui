@@ -1,14 +1,32 @@
+sudo: required
 language: node_js
 node_js:
-- 6
-cache: yarn
-script:
-- echo "Tests not running"
-deploy:
-  provider: npm
-  email: joe.grund@intel.com
-  api_key:
-    secure: cV474bd7wPZAwh/xyjTO19kL7bUoslbSXi2RsYNDQ/JoF884JlMFycW9aswABEF6v1KSnp2O9nRiq2rp0wSfp9ipT4K4DW4gsjeHLuPXJ2pj0dXqKFVaVozKBh40C/XNta04KHTu1la9yeb4J8XMfAX1VsoSAgFTT4xbHiQOSRCgBQ2WhMS1AUxoXDFgrD2RoCTQw9Mxy7eVlhEwRWGIMFTkBjFrKRMwtoTPeP6PmaPSRYjcIbU/EdXBliCAIkQ2pgUrYf5En39W2E8mcsCTrRfbHI2rQey0XXOA4NRL8qMrAW0wrBMYgpEJ4WHchpy7jc1VYcPwgkCKmEPcvCkBslOlEt9KRQDBe0g7aAfVrTC5aFcM21AxR6mG4RzM7KaSat3L2WRqd5q3KlgPB9t3EkiNVpJ/3mmTfsGH2k4FwxzsxqZ+KXZ/899looVouWlMjCGojdknOtCSqIJ3Ei7gDa/x9nZjYZQs1Ds5GV+VQ7vKPpBIyE4PJ2uohRSW0rI6T2klom3FEBEMtPyLgkBT1uRONFlKc6CRue3A10+v1SsGJMZNvTXzraLJAHXob9Sik/LDeJssE5fQHe8yn3/hTRaE2tTuaKH+QrMLK/hVbQnDOiiWWLSK+4bMpcEywOymwySQv6rrILDZNjhi1TLK2Qc3XW4nzDhb9PoVszAaEOY=
-  on:
-    tags: true
-    repo: intel-hpdd/old-gui
+  - 6
+services:
+  - docker
+jobs:
+  include:
+    - stage: deploy-npm
+      if: branch =~ ^v\d+\.\d+\.\d+-1.*$
+      env: Type='npm Deploy'
+      before_deploy:
+        - npm i --ci
+      deploy:
+        provider: npm
+        skip_cleanup: true
+        email: "$NPM_EMAIL"
+        api_key: "$NPM_TOKEN"
+        on:
+          all_branches: true
+    - stage: deploy-copr
+      if: branch =~ ^v\d+\.\d+\.\d+-.+$
+      env: Type='Copr deploy'
+      language: generic
+      before_deploy:
+        - openssl aes-256-cbc -K $encrypted_253525cedcf6_key -iv $encrypted_253525cedcf6_iv -in copr-mfl.enc -out copr-key -d
+      deploy:
+        skip_cleanup: true
+        provider: script
+        script: docker run -it --name copr -v $(pwd):/builddir imlteam/dotnet-docker bash -c 'yum install -y rpmdevtools copr-cli && cd /builddir && fake run build.fsx -- --prod'
+        on:
+          all_branches: true
