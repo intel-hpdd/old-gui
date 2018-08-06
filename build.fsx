@@ -59,6 +59,11 @@ let coprUsername =
 let coprToken =
   DocoptResult.tryGetArgument "--copr-token" parsedArguments
 
+module Option =
+  let expect msg = function
+    | Some x -> x
+    | None -> failwith msg
+
 let getPackageValue key decoder =
   Fake.IO.File.readAsString "package.json"
     |> decodeString (field key decoder)
