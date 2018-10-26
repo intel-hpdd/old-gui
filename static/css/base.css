@@ -358,6 +358,10 @@ tr.log_info {
   overflow:auto;
 }
 
+div.toplevel {
+    overflow-y: hidden;
+}
+
 div.toplevel, div.relative {
     position: relative;
     background-color: white;
