@@ -31,7 +31,7 @@ jobs:
       script:
         - docker run -dit --name copr -v $(pwd):/builddir imlteam/dotnet-docker /usr/sbin/init
         - docker exec -it copr bash -c 'yum install -y rpmdevtools copr-cli'
-        - docker exec -it copr bash -c 'cd /builddir && fake run build.fsx --copr-login=$COPR_LOGIN --copr-username=$COPR_USERNAME --copr-token=$COPR_TOKEN --prod'
+        - docker exec -it copr bash -c "cd /builddir && fake run build.fsx --copr-login=$COPR_LOGIN --copr-username=$COPR_USERNAME --copr-token=$COPR_TOKEN --prod --copr-project=managerforlustre/manager-for-lustre/"
 stages:
   - name: cd
     if: branch = master AND type = push AND fork = false
