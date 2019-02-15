@@ -431,6 +431,12 @@ var Api = function() {
     });
   };
 
+  var callPromise = function(verb, url, api_args) {
+    return new Promise((res, rej) => {
+      call(verb, url, api_args, x => res(x), e => rej(e));
+    });
+  }
+
   function busy()
   {
     return (outstanding_requests > 0)
@@ -450,6 +456,7 @@ var Api = function() {
   return {
     enable: enable,
     call : call,
+    callPromise: callPromise,
     get: get,
     post: post,
     put: put,
