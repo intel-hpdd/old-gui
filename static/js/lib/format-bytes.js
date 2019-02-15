@@ -3,10 +3,10 @@
 // Use of this source code is governed by a MIT-style
 // license that can be found in the LICENSE file.
 
-export default function (bytes, precision) {
-  const units = ['B', 'kiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB'];
+export default function(bytes, precision) {
+  const units = ["B", "kiB", "MiB", "GiB", "TiB", "PiB", "EiB", "ZiB", "YiB"];
 
-  if (isNaN(parseFloat(bytes)) || !isFinite(bytes)) return '';
+  if (isNaN(parseFloat(bytes)) || !isFinite(bytes)) return "";
   precision = precision || 4;
 
   bytes = Math.max(bytes, 0);
@@ -15,4 +15,4 @@ export default function (bytes, precision) {
   pwr = Math.max(pwr, 0);
   bytes /= Math.pow(1024, pwr);
   return `${bytes.toPrecision(precision)} ${units[pwr]}`;
-};
+}
