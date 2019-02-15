@@ -3,7 +3,7 @@
 // Use of this source code is governed by a MIT-style
 // license that can be found in the LICENSE file.
 
-function formatBytes (bytes, precision) {
+export default function (bytes, precision) {
   const units = ['B', 'kiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB'];
 
   if (isNaN(parseFloat(bytes)) || !isFinite(bytes)) return '';

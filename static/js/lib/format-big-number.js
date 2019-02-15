@@ -3,7 +3,7 @@
 // Use of this source code is governed by a MIT-style
 // license that can be found in the LICENSE file.
 
-function formatBigNumber (num, precision, strict = false) {
+export default function (num, precision, strict = false) {
   const units = ['', 'k', 'M', 'B', 'T'];
   num = $.isNumeric(num) ? num : 0;
   precision = $.isNumeric(precision) ? precision : 3;
