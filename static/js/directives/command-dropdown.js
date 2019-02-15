@@ -23,23 +23,9 @@
          * @description builds the list of actions that can be performed.
          */
         function buildList() {
-          scope.list = ['transitions', 'jobs']
-            .map(function (type) {
-              var items = angular.copy(scope.data['available_%s'.sprintf(type)]);
-
-              items
-                .filter(function (item) {
-                  return item.verb !== null;
-                })
-                .forEach(function (item) {
-                item.type = type;
-              });
-
-              return items;
-            })
-            .reduce(function (prev, curr) {
-              return prev.concat(curr);
-            });
+          var availableActions = angular.copy(scope.data['available_actions']);
+          scope.list = Array.isArray(availableActions) ? 
+            availableActions.filter(item => item.verb !== null) : [];
         }
 
         /**
@@ -97,8 +83,7 @@
         });
 
         // Setup handlers.
-        generateHandler('transition');
-        generateHandler('job');
+        generateHandler('action');
 
         // Build the list the first time.
         buildList();

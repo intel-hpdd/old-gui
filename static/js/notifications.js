@@ -27,6 +27,40 @@ function loadObjectSelection(kind, select_el)
 var LiveObject = function()
 {
 
+  function actionClicked() {
+    var dialog;
+    var className = $(this).data('class');
+    var message = $(this).data('message');
+    var confirmation = JSON.parse($(this).data('confirmation'));
+    var args = $(this).data('args');
+
+    var action = {class_name: className, args};
+
+    if (confirmation) {
+      var markup = "<div style='overflow-y: auto; max-height: 700px;'>" + confirmation + "</div>";
+      dialog = $(markup).dialog({
+        'buttons': {
+          'Cancel': function() {$(this).dialog('close');},
+          'Confirm': {
+            text: "Confirm",
+            class: "confirm_button",
+            click: function(){
+              Api.post('/api/command/', {'jobs': [action], message}, function(data) {
+                CommandNotification.begin(data);
+                dialog.dialog().dialog('close');
+              });
+            }
+          }
+        },
+        'title': message
+      });
+    } else {
+      Api.post('/api/command/', {'jobs': [action], message: message}, function(data) {
+        CommandNotification.begin(data);
+      });
+    }
+  }
+
   function jobClicked()
   {
     var dialog;
@@ -223,6 +257,7 @@ var LiveObject = function()
     state: state,
     active_host: active_host,
     renderState: renderState,
+    actionClicked: actionClicked,
     transitionClicked: transitionClicked,
     jobClicked: jobClicked
   }
