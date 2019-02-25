@@ -58,7 +58,6 @@
     function Table(selectorString, id, kind) {
       'use strict';
 
-      var generateCommandDropdown = angular.element('html').injector().get('generateCommandDropdown');
       var that = this;
 
       this.$selector = $(selectorString);
@@ -142,7 +141,7 @@
         bPaginate: true,
         bProcessing: true,
         bServerSide: true,
-        fnRowCallback: generateCommandDropdown.dataTableCallback(6, _.identity, _.isEmpty),
+        fnInitComplete: window.generateCommandDropdown.dataTableInitComplete,
         fnServerData: function (url, data, callback, settings) {
           var tableInstance = this;
 
@@ -437,9 +436,10 @@
               $('#fs_alerts').html(LiveObject.alertLabel(filesystem));
               $('#fs_name').html(filesystem.name);
 
-              var generateCommandDropdown = angular.element('html').injector().get('generateCommandDropdown');
-              var $commandDropdown = generateCommandDropdown.generateDropdown(
-                angular.element('#fs_actions'), 
+              const actionDropdown = document.querySelector('#fs_actions div');
+
+              window.generateCommandDropdown.generateDropdown(
+                actionDropdown, 
                 {
                   ...filesystem,
                   available_actions: [...action_data.objects]
@@ -447,7 +447,7 @@
                 'right'
               );
 
-              $commandDropdown.after(LiveObject.busyIcon(filesystem));
+              $(actionDropdown).after(LiveObject.busyIcon(filesystem));
 
               // Config param dialog
               router_instance.conf_param_dialog = conf_param_dialog = ConfParamDialog({
@@ -566,7 +566,9 @@
         </tr>
         <tr>
           <th>Actions:</th>
-          <td id='fs_actions'></td>
+          <td id='fs_actions'>
+            <div />
+          </td>
         </tr>
       </table>
       <p>

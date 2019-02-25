@@ -18,8 +18,7 @@ var TargetDetail = Backbone.View.extend({
     $(this.el).find('.ui-dialog-content').html(rendered);
     $(this.el).find('.tabs').tabs({'show': function(event, ui) {view.tab_select(event, ui)}});
 
-    var generateCommandDropdown = angular.element('html').injector().get('generateCommandDropdown');
-    generateCommandDropdown.generateDropdown($(this.el).find('div[command-dropdown]'), cleanModel);
+    window.generateCommandDropdown.generateDropdown($(this.el).find('div[command-dropdown]')[0], cleanModel);
 
     var conf_params = this.model.get('conf_params');
     if (conf_params != null && !this.model.get('immutable_state')) {

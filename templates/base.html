@@ -211,10 +211,10 @@
       type="text/javascript"
       src="/old-gui/js/services/paging.js"
     ></script>
-    <script
-      type="text/javascript"
-      src="/old-gui/js/services/generate_command_dropdown.js"
-    ></script>
+    <script type="module">
+      import * as generateCommandDropdown from "/old-gui/js/services/generate_command_dropdown.js";
+      window.generateCommandDropdown = generateCommandDropdown;
+    </script>
     <script
       type="text/javascript"
       src="/old-gui/js/services/interval.js"
@@ -332,6 +332,9 @@
     <script type="text/javascript" src="/old-gui/js/target_detail.js"></script>
     <script type="text/javascript" src="/old-gui/js/system_status.js"></script>
 
+    <!-- Wasm -->
+    <script src="/wasm-components/package.js"></script>
+
     <!-- Templates -->
     <$=t ( 'system_status.html') $>
 
@@ -340,16 +343,18 @@
 
   <script type="text/javascript">
     $(document).ready(function() {
-      $("div.rightpanel").css("visibility", "hidden");
-      Login.init();
-      ContextualHelp.init();
+      window.wasm_bindgen("/wasm-components/package_bg.wasm").then(() => {
+        $("div.rightpanel").css("visibility", "hidden");
+        Login.init();
+        ContextualHelp.init();
 
-      $("div.rightpanel").css("visibility", "visible");
-      window.loaded = true;
+        $("div.rightpanel").css("visibility", "visible");
+        window.loaded = true;
 
-      new ChromaRouter();
-      Api.on_available(function() {
-        Backbone.history.start({ root: UI_ROOT, pushState: true });
+        new ChromaRouter();
+        Api.on_available(function() {
+          Backbone.history.start({ root: UI_ROOT, pushState: true });
+        });
       });
     });
   </script>

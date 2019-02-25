@@ -15,59 +15,59 @@
         data: '=commandData',
         commandClick: '&'
       },
-      templateUrl: '%spartials/directives/command_dropdown.html'.sprintf(STATIC_URL),
+      template: '<div></div>',
       link: function postLink(scope, el, attrs) {
-        var hasCommandClicked = 'commandClick' in attrs;
+      //   var hasCommandClicked = 'commandClick' in attrs;
 
-        /**
-         * @description builds the list of actions that can be performed.
-         */
-        function buildList() {
-          var availableActions = angular.copy(scope.data['available_actions']);
-          scope.list = Array.isArray(availableActions) ? 
-            availableActions.filter(item => item.verb !== null) : [];
-        }
+      //   /**
+      //    * @description builds the list of actions that can be performed.
+      //    */
+      //   function buildList() {
+      //     var availableActions = angular.copy(scope.data['available_actions']);
+      //     scope.list = Array.isArray(availableActions) ? 
+      //       availableActions.filter(item => item.verb !== null) : [];
+      //   }
 
-        /**
-         * @description creates event handlers. Proxies the call to LiveObject.
-         * @param {string} type
-         */
-        function generateHandler(type) {
-          var handlerName = '%sClicked'.sprintf(type);
+      //   /**
+      //    * @description creates event handlers. Proxies the call to LiveObject.
+      //    * @param {string} type
+      //    */
+      //   function generateHandler(type) {
+      //     var handlerName = '%sClicked'.sprintf(type);
 
-          scope[handlerName] = (hasCommandClicked ? commandClickedHandler : originalHandler);
+      //     scope[handlerName] = (hasCommandClicked ? commandClickedHandler : originalHandler);
 
-          /**
-           * Invokes the corresponding LiveObject
-           * handler call.
-           * @param {Object} $event
-           */
-          function originalHandler ($event) {
-            $window.LiveObject[handlerName].apply($event.target);
-          }
+      //     /**
+      //      * Invokes the corresponding LiveObject
+      //      * handler call.
+      //      * @param {Object} $event
+      //      */
+      //     function originalHandler ($event) {
+      //       $window.LiveObject[handlerName].apply($event.target);
+      //     }
 
-          /**
-           * Invokes the command clicked handler.
-           * @param {Object} $event
-           */
-          function commandClickedHandler ($event) {
-            scope.commandClick({
-              $event: $event,
-              data: scope.data,
-              done: originalHandler.bind(null, $event)
-            });
-          }
-        }
+      //     /**
+      //      * Invokes the command clicked handler.
+      //      * @param {Object} $event
+      //      */
+      //     function commandClickedHandler ($event) {
+      //       scope.commandClick({
+      //         $event: $event,
+      //         data: scope.data,
+      //         done: originalHandler.bind(null, $event)
+      //       });
+      //     }
+      //   }
 
-        scope.toJson = angular.toJson;
+      //   scope.toJson = angular.toJson;
 
-        var deregistrationFunctions = [];
+      var deregistrationFunctions = [];
 
-        deregistrationFunctions[0] = scope.$on('disableCommandDropdown', function (ev, uri) {
-          if (scope.data.resource_uri === uri) {
-            el.addClass('hide');
-          }
-        });
+      //   deregistrationFunctions[0] = scope.$on('disableCommandDropdown', function (ev, uri) {
+      //     if (scope.data.resource_uri === uri) {
+      //       el.addClass('hide');
+      //     }
+      //   });
 
         deregistrationFunctions[1] = scope.$on('updateCommandDropdown', function (ev, uri, obj) {
           function runUpdate() {
@@ -78,24 +78,26 @@
           if (scope.data.resource_uri === uri) {
             el.removeClass('hide');
 
+            console.log('running update', scope.seedApp);
             scope.$root.safeApply(runUpdate, scope);
           }
         });
 
-        // Setup handlers.
-        generateHandler('action');
+      //   // Setup handlers.
+      //   generateHandler('action');
 
-        // Build the list the first time.
-        buildList();
+      //   // Build the list the first time.
+      //   buildList();
 
-        // Blank out the button if a job is in progress
-        if ($window.CommandNotification.uriIsWriteLocked(scope.data.resource_uri)) {
-          scope.$broadcast('disableCommandDropdown', scope.data.resource_uri);
-        }
+      //   // Blank out the button if a job is in progress
+      //   if ($window.CommandNotification.uriIsWriteLocked(scope.data.resource_uri)) {
+      //     scope.$broadcast('disableCommandDropdown', scope.data.resource_uri);
+      //   }
 
-        scope.$on('$destroy', function () {
-          deregistrationFunctions.forEach(function (func) { func(); });
-        });
+      //   scope.$on('$destroy', function () {
+      //     deregistrationFunctions.forEach(function (func) { func(); });
+      //   });
+      // }
       }
     };
   }

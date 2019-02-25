@@ -1,96 +1,64 @@
-//
-// Copyright (c) 2018 DDN. All rights reserved.
+// Copyright (c) 2019 DDN. All rights reserved.
 // Use of this source code is governed by a MIT-style
 // license that can be found in the LICENSE file.
 
+const listeners = [];
 
-(function () {
-  'use strict';
+let locks = null;
 
-  //@TODO: This module is a stopgap. Remove when directives can be natively interpreted.
+const addListener = fn => {
+  listeners.push(fn);
 
-  function factory($rootScope, $compile) {
-    return {
-      /**
-       * @description Abstraction to integrate the command-dropdown with datatables.
-       * @param {number} index
-       * @param {function} [transformFunc]
-       * @param {function} [abortFunc]
-       * @param {function} [commandClick]
-       * @returns {function}
-       */
-      dataTableCallback: function (index, transformFunc, abortFunc, commandClick) {
-        transformFunc = transformFunc || angular.identity;
-        abortFunc = abortFunc || function () { return false; };
+  if (locks) fn(locks);
+};
 
-        /**
-         * @description Called after a row draw. A good place to hook in.
-         * @param {Object} row
-         * @param {Object} data
-         * @returns {[]}
-         */
-        return function fnRowCallback(row, data) {
-          data = transformFunc(data);
+const removeListener = fn => listeners.splice(listeners.findIndex(fn), 1);
 
-          if (abortFunc(data)) {
-            return row;
-          }
+window.addEventListener("message", locks => {
+  locks = JSON.parse(locks);
 
-          // NOTE: This is only being done because of the Angular in Backbone paradigm.
-          var $actionCell = angular.element(row).find('td:nth-child(%d)'.sprintf(index));
+  listeners.forEach(fn => {
+    fn(locks);
+  });
+});
 
-          this.generateDropdown($actionCell, data, null, commandClick);
+function getRandomValue() {
+  const array = new Uint32Array(1);
+  return window.crypto.getRandomValues(array)[0];
+}
 
-          return row;
-        }.bind(this);
-      },
-      /**
-       * @description The main core of this module. Takes an element and generates a command-dropdown directive
-       * @param {object} parentOrElement The parent to insert into or the element itself
-       * @param {object} data The data to attach to scope.
-       * @param {string} [placement] What direction? 'top'|'bottom'|'left'|'right'
-       * @param {Function} [commandClick] Passes the commandClick to the directive.
-       * @returns {object} The command-dropdown element
-       */
-      generateDropdown: function (parentOrElement, data, placement, commandClick) {
-        placement = placement || 'left';
+let id = () => {};
 
-        var isElement = (parentOrElement.attr('command-dropdown') !== undefined &&
-          parentOrElement.attr('command-dropdown') !== false);
+export function dataTableInitComplete (settings) {
+  settings.aoData.forEach(({nTr: row, _aData: data}) => {
+    let cell = Array.from(row.cells).find(cell => cell.classList.contains("actions-cell"));
+    if (cell != null) {
+      const div = document.createElement('div');
+      cell.appendChild(div);  
 
-        var hasCommandClick =  (typeof commandClick === 'function');
+      generateDropdown(div, data);
+    }
+  });
+}
 
-        var template = (isElement ?
-          parentOrElement:
-          '<div command-dropdown command-placement="%s" command-data="data"%s></div>'.sprintf(
-            placement,
-            hasCommandClick ? ' command-click="commandClick($event, data, done)"': ''
-          ));
+export function generateDropdown(el, record, placement = "left") {
+  const uuid = getRandomValue().toString();
+  el.id = uuid;
 
-        var insertfunc = (isElement ? angular.noop: function (fragment) { parentOrElement.html(fragment); });
+  const { init } = window.wasm_bindgen;
 
-        // NOTE: This is only being done because of the Angular in Backbone paradigm.
-        var $scope = $rootScope.$new();
+  const instance = init({
+    uuid,
+    records: [record],
+    locks: {},
+    flag: undefined,
+    tooltip_placement: placement,
+    tooltip_size: undefined
+  });
 
-        $scope.data = data;
+  addListener(locks => {
+    instance.set_locks(locks);
+  });
 
-        if (hasCommandClick)
-          $scope.commandClick = commandClick;
-
-        return $scope.safeApply(function () {
-          var link = $compile(template);
-          var fragment = link($scope);
-          insertfunc(fragment);
-
-          return fragment.bind('$destroy', function () {
-            $scope.safeApply(function () { $scope.$destroy(); }, $scope);
-
-            fragment.unbind('$destroy');
-          });
-        }, $scope);
-      }
-    };
-  }
-
-  angular.module('services').factory('generateCommandDropdown', ['$rootScope', '$compile', factory]);
-}());
+  return instance;
+}

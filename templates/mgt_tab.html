@@ -27,8 +27,6 @@
 
     function init()
     {
-      var generateCommandDropdown = angular.element('html').injector().get('generateCommandDropdown');
-
       // List Existing MGT JQuery Table init()
       var oMgtConfiguration = $('#mgt_configuration').dataTable( {
         bServerSide: true,
@@ -65,7 +63,7 @@
           { "sClass": 'txtcenter actions-cell', bSortable: false, mDataProp: 'state_transitions', bSortable: false},
           { "sClass": 'txtleft', bSortable: false, mDataProp: 'notification_icons', bSortable: false}
         ],
-        fnRowCallback: generateCommandDropdown.dataTableCallback(6)
+        fnInitComplete: window.generateCommandDropdown.dataTableInitComplete
       } );
 
       $('#btnNewMGT').attr('disabled', true);
