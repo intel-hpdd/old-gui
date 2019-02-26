@@ -16,15 +16,9 @@ const addDestroyer = (uuid, fn) => {
   destroyers.set(uuid, fn);
 };
 
-export const removeListener = uuid => {
-  console.log("removing listener for uuid ", uuid);
-  listeners.delete(uuid);
-}
+export const removeListener = uuid => listeners.delete(uuid);
 
-export const removeDestroyer = uuid => {
-  console.log("removing destroyer for uuid", uuid);
-  destroyers.delete(uuid);
-}
+export const removeDestroyer = uuid => destroyers.delete(uuid);
 
 const onMessage = ({data}) => {
   locks = JSON.parse(data);
@@ -35,13 +29,11 @@ const onMessage = ({data}) => {
 };
 
 const removeAllListeners = () => {
-  console.log("removing listeners: ", listeners.length);
   window.removeEventListener("message", onMessage);
   listeners.clear();
 };
 
 const destroyAllButtons = () => {
-  console.log("destroying all buttons");
   destroyers.forEach(fn => fn());
   destroyers.clear();
 }
@@ -51,7 +43,6 @@ window.addEventListener("message", onMessage);
 
 // Remove the event listeners when the page unloads
 window.addEventListener('unload', () => {
-  console.log('destroying event listeners');
   removeAllListeners();
   destroyAllButtons();
 });
@@ -94,12 +85,12 @@ export function cleanupButtons (settings) {
         if (div) {
           const uuid = div.id;
           if (uuid) {
-            window.generateCommandDropdown.removeListener(uuid);
+            removeListener(uuid);
             const destroyer = destroyers.get(uuid);
             if (destroyer)
               destroyer();
               
-            window.generateCommandDropdown.removeDestroyer(uuid);
+            removeDestroyer(uuid);
           }
         }
       }
@@ -121,14 +112,9 @@ export function generateDropdown(el, record, placement = "left") {
     tooltip_size: undefined
   });
 
-  console.log("adding listener with uuid", uuid);
-  addListener(uuid, locks => {
-    console.log('setting locks');
-    instance.set_locks(locks);
-  });
+  addListener((uuid, locks) => instance.set_locks(locks));
 
   addDestroyer(uuid,  () => {
-    console.log("destroying and freeing", uuid);
     instance.destroy();
     instance.free();
   });

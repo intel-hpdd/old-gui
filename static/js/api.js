@@ -431,11 +431,10 @@ var Api = function() {
     });
   };
 
-  var callPromise = function(verb, url, api_args) {
-    return new Promise((res, rej) => {
+  const callPromise = function(verb, url, api_args) => 
+    new Promise((res, rej) => {
       call(verb, url, api_args, x => res(x), e => rej(e));
     });
-  }
 
   function busy()
   {
