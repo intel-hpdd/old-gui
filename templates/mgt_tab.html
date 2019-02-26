@@ -35,6 +35,7 @@
         bInfo: false,
         sAjaxSource: 'target/',
         fnServerData: function(url, data, callback, settings) {
+          const tableInstance = this;
           Api.get_datatables(url, data, function(data) {
             $.each(data.aaData, function(i, mgt) {
               var fs_names = [];
@@ -44,6 +45,7 @@
               mgt.state_transitions = '';
               mgt.notification_icons = LiveObject.icons(mgt);
             });
+            window.generateCommandDropdown.cleanupButtons(tableInstance[0]);
             callback(data);
           }, settings, {kind: 'MGT'});
         },
@@ -63,7 +65,7 @@
           { "sClass": 'txtcenter actions-cell', bSortable: false, mDataProp: 'state_transitions', bSortable: false},
           { "sClass": 'txtleft', bSortable: false, mDataProp: 'notification_icons', bSortable: false}
         ],
-        fnInitComplete: window.generateCommandDropdown.dataTableInitComplete
+        fnInfoCallback: window.generateCommandDropdown.dataTableInfoCallback
       } );
 
       $('#btnNewMGT').attr('disabled', true);

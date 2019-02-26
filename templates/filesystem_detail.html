@@ -141,12 +141,15 @@
         bPaginate: true,
         bProcessing: true,
         bServerSide: true,
-        fnInitComplete: window.generateCommandDropdown.dataTableInitComplete,
+        fnInfoCallback: window.generateCommandDropdown.dataTableInfoCallback,
         fnServerData: function (url, data, callback, settings) {
           var tableInstance = this;
 
           var callbacks = {
-            success: callback,
+            success: (...args) => {
+              window.generateCommandDropdown.cleanupButtons(tableInstance[0]);
+              callback(...args);
+            },
             error: {
               '404': function () {
                 // If we 404 here then the target we are looking for no longer exists.

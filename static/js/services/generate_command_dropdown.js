@@ -2,25 +2,64 @@
 // Use of this source code is governed by a MIT-style
 // license that can be found in the LICENSE file.
 
-const listeners = [];
-
+const listeners = new Map();
+const destroyers = new Map();
 let locks = null;
 
-const addListener = fn => {
-  listeners.push(fn);
+const addListener = (uuid, fn) => {
+  listeners.set(uuid, fn);
 
   if (locks) fn(locks);
 };
 
-const removeListener = fn => listeners.splice(listeners.findIndex(fn), 1);
+const addDestroyer = (uuid, fn) => {
+  destroyers.set(uuid, fn);
+};
 
-window.addEventListener("message", locks => {
-  locks = JSON.parse(locks);
+export const removeListener = uuid => {
+  console.log("removing listener for uuid ", uuid);
+  listeners.delete(uuid);
+}
+
+export const removeDestroyer = uuid => {
+  console.log("removing destroyer for uuid", uuid);
+  destroyers.delete(uuid);
+}
+
+const onMessage = ({data}) => {
+  locks = JSON.parse(data);
 
   listeners.forEach(fn => {
     fn(locks);
   });
+};
+
+const removeAllListeners = () => {
+  console.log("removing listeners: ", listeners.length);
+  window.removeEventListener("message", onMessage);
+  listeners.clear();
+};
+
+const destroyAllButtons = () => {
+  console.log("destroying all buttons");
+  destroyers.forEach(fn => fn());
+  destroyers.clear();
+}
+
+// Handle receiving locks from the parent
+window.addEventListener("message", onMessage);
+
+// Remove the event listeners when the page unloads
+window.addEventListener('unload', () => {
+  console.log('destroying event listeners');
+  removeAllListeners();
+  destroyAllButtons();
 });
+
+window.addEventListener('action_selected', ({detail}) => {
+  window.parent.postMessage(JSON.stringify({type: "action_selected", detail}), location.origin);
+});
+
 
 function getRandomValue() {
   const array = new Uint32Array(1);
@@ -29,7 +68,10 @@ function getRandomValue() {
 
 let id = () => {};
 
-export function dataTableInitComplete (settings) {
+// Called whenever the table:
+// A. Finishes rendering
+// B. A pagination table update completed
+export function dataTableInfoCallback (settings) {
   settings.aoData.forEach(({nTr: row, _aData: data}) => {
     let cell = Array.from(row.cells).find(cell => cell.classList.contains("actions-cell"));
     if (cell != null) {
@@ -39,6 +81,29 @@ export function dataTableInitComplete (settings) {
       generateDropdown(div, data);
     }
   });
+}
+
+export function cleanupButtons (settings) {
+  Array.from(settings.rows)
+    .forEach(row => {
+      const cell = Array.from(row.cells)
+        .find(cell => cell.classList.contains("actions-cell"));
+      
+      if (cell) {
+        const div = cell.querySelector("div");
+        if (div) {
+          const uuid = div.id;
+          if (uuid) {
+            window.generateCommandDropdown.removeListener(uuid);
+            const destroyer = destroyers.get(uuid);
+            if (destroyer)
+              destroyer();
+              
+            window.generateCommandDropdown.removeDestroyer(uuid);
+          }
+        }
+      }
+    });
 }
 
 export function generateDropdown(el, record, placement = "left") {
@@ -56,8 +121,16 @@ export function generateDropdown(el, record, placement = "left") {
     tooltip_size: undefined
   });
 
-  addListener(locks => {
+  console.log("adding listener with uuid", uuid);
+  addListener(uuid, locks => {
+    console.log('setting locks');
     instance.set_locks(locks);
+  });
+
+  addDestroyer(uuid,  () => {
+    console.log("destroying and freeing", uuid);
+    instance.destroy();
+    instance.free();
   });
 
   return instance;

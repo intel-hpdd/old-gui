@@ -367,7 +367,7 @@
             var href = $(this).attr("href");
             var url = href.replace(r, "");
 
-            parent.postMessage(url, location.origin);
+            parent.postMessage(JSON.stringify({type: "navigation", url}), location.origin);
           });
         });
       </script>

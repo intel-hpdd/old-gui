@@ -34,7 +34,10 @@
           }
           buttons.push($("<button>Edit</button>").click(function() {
             parent.postMessage(
-              '/configure/user/' + row.user.id,
+              JSON.stringify({
+                type: "navigation",
+                url: '/configure/user/' + row.user.id,
+              }),
               location.origin
             );
           }));

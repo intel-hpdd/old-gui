@@ -85,7 +85,7 @@
           set_mdt_advanced_visible(false);
 
           parent.postMessage(
-            'configure/filesystem/' + data.filesystem.id,
+            JSON.stringify({type: "navigation", url: 'configure/filesystem/' + data.filesystem.id}),
             location.origin
           );
         },
