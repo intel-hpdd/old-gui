@@ -4,19 +4,28 @@
 
 .tooltip-container.tooltip-hover:hover .tooltip.inferno-tt {
   display: block;
-  opacity: .9;
+  opacity: 0.9;
   max-width: 200px;
 }
 
 .tooltip-container.tooltip-hover:hover .tooltip.inferno-tt .tooltip-inner {
   word-wrap: break-word;
+  max-width: 200px;
+  text-align: center;
+  color: #fff;
+  background-color: #000;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.dropdown-menu .tooltip-inner {
+  width: inherit;
 }
 
 .has-error > .tooltip.inferno-tt {
   display: block;
-  opacity: .9;
+  opacity: 0.9;
 }
-
 
 .tooltip.inferno-tt {
   width: 200px;
@@ -46,7 +55,7 @@
 
 .tooltip.inferno-tt.left {
   bottom: 50%;
-    transform: translate(-100%, 50%);
+  transform: translate(-100%, 50%);
 }
 
 .tooltip.inferno-tt.bottom {
