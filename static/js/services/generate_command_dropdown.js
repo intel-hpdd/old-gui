@@ -112,7 +112,7 @@ export function generateDropdown(el, record, placement = "left") {
     tooltip_size: undefined
   });
 
-  addListener((uuid, locks) => instance.set_locks(locks));
+  addListener(uuid, locks => instance.set_locks(locks));
 
   addDestroyer(uuid,  () => {
     instance.destroy();
