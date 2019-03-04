@@ -114,7 +114,7 @@ export function generateDropdown(el, record, placement = "left") {
 
   addListener(uuid, locks => instance.set_locks(locks));
 
-  addDestroyer(uuid,  () => {
+  addDestroyer(uuid, () => {
     instance.destroy();
     instance.free();
   });

@@ -18,6 +18,15 @@
   border-color: #204d74;
 }
 
+.action-dropdown .btn-group .btn.disabled, 
+.action-dropdown .btn-group .btn.disabled:hover, 
+.action-dropdown .btn-group .btn:disabled, 
+.action-dropdown .btn-group .btn:disabled:hover {
+  background-color: #777;
+  border-color: #6a6a6a;
+  color: #333;
+}
+
 .action-dropdown .btn-group .btn-primary.dropdown-toggle:focus
 {
   background-color: #286090;
