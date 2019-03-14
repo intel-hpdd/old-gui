@@ -1,8 +1,8 @@
-﻿%define base_name old-gui
+%define base_name old-gui
 
 Name:       iml-%{base_name}
-Version:    @version@
-Release:    @release@%{?dist}
+Version:    3.1.0
+Release:    1%{?dist}
 Summary:    Transitional GUI.
 License:    MIT
 Group:      System Environment/Libraries
@@ -32,6 +32,9 @@ rm -rf %{buildroot}
 %{nodejs_sitelib}
 
 %changelog
+* Thu Mar 14 2019 Will Johnson <wjohnson@whamcloud.com> - 3.1.0-1
+- Integrate wasm action-dropdown to old pages
+- Update repo to work with copr builder
 * Fri Oct 26 2018 Will Johnson <wjohnson@whamcloud.com> - 3.0.1-1
 - Fix double scrollbar issue
 * Tue Jun 19 2018 Joe Grund <jgrund@whamcloud.com> - 3.0.0-1
