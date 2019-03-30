@@ -1,8 +1,10 @@
 %define base_name old-gui
 
 Name:       iml-%{base_name}
-Version:    3.1.0
+Version:    3.1.1
+# Release Start
 Release:    1%{?dist}
+# Release End
 Summary:    Transitional GUI.
 License:    MIT
 Group:      System Environment/Libraries

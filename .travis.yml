@@ -6,14 +6,12 @@ services:
   - docker
 jobs:
   include:
-    - stage: cd
-      git:
-        depth: 999999
-      name: "Continuous Deployment"
+    - stage: test
+      name: "copr build test"
       script:
-        - docker run -dit --name copr -v $(pwd):/builddir imlteam/dotnet-docker /usr/sbin/init
-        - docker exec -it copr bash -c 'yum install -y rpmdevtools copr-cli git'
-        - docker exec -it copr bash -c "cd /builddir && fake run build.fsx --release=\$(git rev-list HEAD | wc -l) --copr-login=$COPR_LOGIN --copr-username=$COPR_USERNAME --copr-token=$COPR_TOKEN"
+        - export SPEC=iml-old-gui.spec
+        - docker run -it -e SPEC="$SPEC" -e LOCAL_ONLY="True" -v $(pwd):/build:rw imlteam/copr
+        - ((`find _topdir/RPMS -name *.rpm | wc -l` > 0))
     - stage: deploy-npm
       name: "npm Deploy"
       script: skip
@@ -27,15 +25,27 @@ jobs:
           all_branches: true
     - stage: deploy-copr
       name: "Copr deploy"
-      language: generic
       script:
-        - docker run -dit --name copr -v $(pwd):/builddir imlteam/dotnet-docker /usr/sbin/init
-        - docker exec -it copr bash -c 'yum install -y rpmdevtools copr-cli'
-        - docker exec -it copr bash -c "cd /builddir && fake run build.fsx --copr-login=$COPR_LOGIN --copr-username=$COPR_USERNAME --copr-token=$COPR_TOKEN --prod --copr-project=managerforlustre/manager-for-lustre/"
+        - export OWNER=managerforlustre
+        - export PROJECT=manager-for-lustre
+        - export PACKAGE=iml-old-gui
+        - export SPEC=iml-old-gui.spec
+        - docker run -it -e OWNER="$OWNER" -e PROJECT="$PROJECT" -e PACKAGE="$PACKAGE" -e SPEC="$SPEC" -e PROD="True" -e KEY="$encrypted_253525cedcf6_key" -e IV="$encrypted_253525cedcf6_iv" -v $(pwd):/build:rw imlteam/copr
+      on:
+        all_branches: true
+    - stage: cd
+      env: Type='Continuous Deployment'
+      script:
+        - export OWNER=managerforlustre
+        - export PROJECT=manager-for-lustre-devel
+        - export PACKAGE=iml-old-gui
+        - export SPEC=iml-old-gui.spec
+        - docker run -it -e OWNER="$OWNER" -e PROJECT="$PROJECT" -e PACKAGE="$PACKAGE" -e SPEC="$SPEC" -e KEY="$encrypted_253525cedcf6_key" -e IV="$encrypted_253525cedcf6_iv" -v $(pwd):/build:rw imlteam/copr
 stages:
-  - name: cd
-    if: branch = master AND type = push AND fork = false
+  - test
   - name: deploy-npm
     if: branch =~ ^v\d+\.\d+\.\d+-1.*$
   - name: deploy-copr
     if: branch =~ ^v\d+\.\d+\.\d+-.+$
+  - name: cd
+    if: branch = master AND type = push AND fork = false
