@@ -1,0 +1,95 @@
+.tooltip-container {
+  position: relative;
+}
+
+.tooltip-container.tooltip-hover:hover .tooltip.inferno-tt {
+  display: block;
+  opacity: 0.9;
+  max-width: 200px;
+}
+
+.tooltip-container.tooltip-hover:hover .tooltip.inferno-tt .tooltip-inner {
+  word-wrap: break-word;
+  max-width: 200px;
+  text-align: center;
+  color: #fff;
+  background-color: #000;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.dropdown-menu .tooltip-inner {
+  width: inherit;
+}
+
+.has-error > .tooltip.inferno-tt {
+  display: block;
+  opacity: 0.9;
+}
+
+.tooltip.inferno-tt {
+  width: 200px;
+}
+
+.tooltip.inferno-tt.xsmall {
+  width: 50px;
+}
+
+.tooltip.inferno-tt.small {
+  width: 100px;
+}
+
+.tooltip.inferno-tt.medium {
+  width: 150px;
+}
+
+.tooltip.inferno-tt.large {
+  width: 200px;
+}
+
+.tooltip.inferno-tt.right {
+  left: 100%;
+  bottom: 50%;
+  transform: translateY(50%);
+}
+
+.tooltip.inferno-tt.left {
+  bottom: 50%;
+  transform: translate(-100%, 50%);
+}
+
+.tooltip.inferno-tt.bottom {
+  transform: translateX(50%);
+  top: 100%;
+  right: 50%;
+}
+
+.tooltip.inferno-tt.top {
+  transform: translate(50%, -100%);
+  top: 0;
+  right: 50%;
+}
+
+.tooltip {
+  display: none;
+}
+
+.tooltip.in {
+  display: block;
+}
+
+.tooltip.left .tooltip-arrow {
+  top: 50%;
+  right: 0;
+  margin-top: -5px;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #000;
+}
+
+.tooltip-arrow {
+  position: absolute;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+}

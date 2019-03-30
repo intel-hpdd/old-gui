@@ -1,96 +1,129 @@
-//
-// Copyright (c) 2018 DDN. All rights reserved.
+// Copyright (c) 2019 DDN. All rights reserved.
 // Use of this source code is governed by a MIT-style
 // license that can be found in the LICENSE file.
 
+const listeners = new Map();
+const destroyers = new Map();
+let locks = null;
 
-(function () {
-  'use strict';
+const addListener = (uuid, fn) => {
+  listeners.set(uuid, fn);
 
-  //@TODO: This module is a stopgap. Remove when directives can be natively interpreted.
+  if (locks) fn(locks);
+};
 
-  function factory($rootScope, $compile) {
-    return {
-      /**
-       * @description Abstraction to integrate the command-dropdown with datatables.
-       * @param {number} index
-       * @param {function} [transformFunc]
-       * @param {function} [abortFunc]
-       * @param {function} [commandClick]
-       * @returns {function}
-       */
-      dataTableCallback: function (index, transformFunc, abortFunc, commandClick) {
-        transformFunc = transformFunc || angular.identity;
-        abortFunc = abortFunc || function () { return false; };
+const addDestroyer = (uuid, fn) => {
+  destroyers.set(uuid, fn);
+};
 
-        /**
-         * @description Called after a row draw. A good place to hook in.
-         * @param {Object} row
-         * @param {Object} data
-         * @returns {[]}
-         */
-        return function fnRowCallback(row, data) {
-          data = transformFunc(data);
+export const removeListener = uuid => listeners.delete(uuid);
 
-          if (abortFunc(data)) {
-            return row;
-          }
+export const removeDestroyer = uuid => destroyers.delete(uuid);
 
-          // NOTE: This is only being done because of the Angular in Backbone paradigm.
-          var $actionCell = angular.element(row).find('td:nth-child(%d)'.sprintf(index));
+const onMessage = ({ data }) => {
+  locks = JSON.parse(data);
 
-          this.generateDropdown($actionCell, data, null, commandClick);
+  listeners.forEach(fn => {
+    fn(locks);
+  });
+};
 
-          return row;
-        }.bind(this);
-      },
-      /**
-       * @description The main core of this module. Takes an element and generates a command-dropdown directive
-       * @param {object} parentOrElement The parent to insert into or the element itself
-       * @param {object} data The data to attach to scope.
-       * @param {string} [placement] What direction? 'top'|'bottom'|'left'|'right'
-       * @param {Function} [commandClick] Passes the commandClick to the directive.
-       * @returns {object} The command-dropdown element
-       */
-      generateDropdown: function (parentOrElement, data, placement, commandClick) {
-        placement = placement || 'left';
+const removeAllListeners = () => {
+  window.removeEventListener("message", onMessage);
+  listeners.clear();
+};
 
-        var isElement = (parentOrElement.attr('command-dropdown') !== undefined &&
-          parentOrElement.attr('command-dropdown') !== false);
+const destroyAllButtons = () => {
+  destroyers.forEach(fn => fn());
+  destroyers.clear();
+};
 
-        var hasCommandClick =  (typeof commandClick === 'function');
+// Handle receiving locks from the parent
+window.addEventListener("message", onMessage);
 
-        var template = (isElement ?
-          parentOrElement:
-          '<div command-dropdown command-placement="%s" command-data="data"%s></div>'.sprintf(
-            placement,
-            hasCommandClick ? ' command-click="commandClick($event, data, done)"': ''
-          ));
+// Remove the event listeners when the page unloads
+window.addEventListener("unload", () => {
+  removeAllListeners();
+  destroyAllButtons();
+});
 
-        var insertfunc = (isElement ? angular.noop: function (fragment) { parentOrElement.html(fragment); });
+window.addEventListener("action_selected", ({ detail }) => {
+  window.parent.postMessage(
+    JSON.stringify({ type: "action_selected", detail }),
+    location.origin
+  );
+});
 
-        // NOTE: This is only being done because of the Angular in Backbone paradigm.
-        var $scope = $rootScope.$new();
+function getRandomValue() {
+  const array = new Uint32Array(1);
+  return window.crypto.getRandomValues(array)[0];
+}
 
-        $scope.data = data;
+let id = () => {};
 
-        if (hasCommandClick)
-          $scope.commandClick = commandClick;
+// Called whenever the table:
+// A. Finishes rendering
+// B. A pagination table update completed
+export function dataTableInfoCallback(settings) {
+  settings.aoData.forEach(({ nTr: row, _aData: data }) => {
+    let cell = Array.from(row.cells).find(cell =>
+      cell.classList.contains("actions-cell")
+    );
+    if (cell != null) {
+      const div = document.createElement("div");
+      cell.appendChild(div);
 
-        return $scope.safeApply(function () {
-          var link = $compile(template);
-          var fragment = link($scope);
-          insertfunc(fragment);
+      generateDropdown(div, data);
+    }
+  });
+}
 
-          return fragment.bind('$destroy', function () {
-            $scope.safeApply(function () { $scope.$destroy(); }, $scope);
+export function cleanupButtons(settings) {
+  Array.from(settings.rows).forEach(row => {
+    const cell = Array.from(row.cells).find(cell =>
+      cell.classList.contains("actions-cell")
+    );
 
-            fragment.unbind('$destroy');
-          });
-        }, $scope);
+    if (cell) {
+      const div = cell.querySelector("div");
+      if (div) {
+        const uuid = div.id;
+        if (uuid) {
+          removeListener(uuid);
+          const destroyer = destroyers.get(uuid);
+          if (destroyer) destroyer();
+
+          removeDestroyer(uuid);
+        }
       }
-    };
-  }
+    }
+  });
+}
 
-  angular.module('services').factory('generateCommandDropdown', ['$rootScope', '$compile', factory]);
-}());
+export function generateDropdown(el, record, placement = "left") {
+  const uuid = getRandomValue().toString();
+  el.id = uuid;
+
+  const { init } = window.wasm_bindgen;
+
+  const instance = init(
+    {
+      uuid,
+      records: [record],
+      locks: {},
+      flag: undefined,
+      tooltip_placement: placement,
+      tooltip_size: undefined
+    },
+    el
+  );
+
+  addListener(uuid, locks => instance.set_locks(locks));
+
+  addDestroyer(uuid, () => {
+    instance.destroy();
+    instance.free();
+  });
+
+  return instance;
+}

@@ -35,6 +35,8 @@
         <link rel="stylesheet" href="/old-gui/css/bootstrap/bootstrap.css" type="text/css" />
         <link rel="stylesheet" href="/old-gui/css/bootstrap/bootstrap-extend.css" type="text/css" />
         <link rel="stylesheet" href="/old-gui/css/font-awesome/font-awesome.css" type="text/css" />
+        <link href="/old-gui/css/tooltip.css" rel="stylesheet" type="text/css" />
+        <link href="/old-gui/css/action-dropdown.css" rel="stylesheet" type="text/css" />
         <link rel="stylesheet" href="/old-gui/css/volume.css" type="text/css" />
         <link rel="stylesheet" href="/old-gui/css/power_control.css" type="text/css" />
         <link rel="stylesheet" href="/old-gui/css/outlet_info.css" type="text/css" />
@@ -75,14 +77,16 @@
         <script type="text/javascript" src="/old-gui/js/services/compile_template.js"></script>
         <script type="text/javascript" src="/old-gui/js/services/safe_apply.js"></script>
         <script type="text/javascript" src="/old-gui/js/services/paging.js"></script>
-        <script type="text/javascript" src="/old-gui/js/services/generate_command_dropdown.js"></script>
+        <script type="module">
+          import * as generateCommandDropdown from "/old-gui/js/services/generate_command_dropdown.js";
+          window.generateCommandDropdown = generateCommandDropdown;
+        </script>
         <script type="text/javascript" src="/old-gui/js/services/interval.js"></script>
         <script type="text/javascript" src="/old-gui/js/services/page-title.js"></script>
         <script type="text/javascript" src="/old-gui/js/filters/filters_module.js"></script>
         <script type="text/javascript" src="/old-gui/js/filters/capitalize.js"></script>
         <script type="text/javascript" src="/old-gui/js/directives/directive_module.js"></script>
         <script type="text/javascript" src="/old-gui/js/directives/context_tooltip.js"></script>
-        <script type="text/javascript" src="/old-gui/js/directives/command-dropdown.js"></script>
         <script type="text/javascript" src="/old-gui/js/directives/power_control_autocomplete.js"></script>
 
         <script type="text/javascript" src="/old-gui/js/modules/exception/exception-module.js"></script>
@@ -133,21 +137,26 @@
         <!-- Templates -->
         <$=t ( 'system_status.html') $>
 
+        <!-- Wasm -->
+        <script src="/wasm-components/package.js"></script>
+
         <title>Integrated Manager for Lustre</title>
 </head>
 
 <script type='text/javascript'>
           $(document).ready(function () {
-            $('div.rightpanel').css('visibility', 'hidden');
-            Login.init();
-            ContextualHelp.init();
+            window.wasm_bindgen("/wasm-components/package_bg.wasm").then(() => {
+              $('div.rightpanel').css('visibility', 'hidden');
+              Login.init();
+              ContextualHelp.init();
 
-            $('div.rightpanel').css('visibility', 'visible');
-            window.loaded = true;
+              $('div.rightpanel').css('visibility', 'visible');
+              window.loaded = true;
 
-            new ChromaRouter();
-            Api.on_available(function () {
-              Backbone.history.start({ root: UI_ROOT, pushState: true })
+              new ChromaRouter();
+              Api.on_available(function () {
+                Backbone.history.start({ root: UI_ROOT, pushState: true })
+              });
             });
           });
 
@@ -167,7 +176,7 @@
           var url = href.replace(r, '');
 
           parent.postMessage(
-            url,
+            JSON.stringify({type: "navigation", url}), 
             location.origin
           );
         });

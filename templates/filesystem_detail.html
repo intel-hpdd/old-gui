@@ -58,7 +58,6 @@
     function Table(selectorString, id, kind) {
       'use strict';
 
-      var generateCommandDropdown = angular.element('html').injector().get('generateCommandDropdown');
       var that = this;
 
       this.$selector = $(selectorString);
@@ -142,12 +141,15 @@
         bPaginate: true,
         bProcessing: true,
         bServerSide: true,
-        fnRowCallback: generateCommandDropdown.dataTableCallback(6, _.identity, _.isEmpty),
+        fnInfoCallback: window.generateCommandDropdown.dataTableInfoCallback,
         fnServerData: function (url, data, callback, settings) {
           var tableInstance = this;
 
           var callbacks = {
-            success: callback,
+            success: (...args) => {
+              window.generateCommandDropdown.cleanupButtons(tableInstance[0]);
+              callback(...args);
+            },
             error: {
               '404': function () {
                 // If we 404 here then the target we are looking for no longer exists.
@@ -417,92 +419,104 @@
       var filesystem_uri = "filesystem/" + id + "/";
       Api.get(filesystem_uri, {},
         success_callback = function (filesystem_data) {
-          filesystem = filesystem_data;
-          angular.element('html').injector().get('pageTitle').set('Configuration - File Systems - %s'.sprintf(filesystem.label));
+          Api.callPromise(
+            'GET', 
+            `action/?composite_ids=${filesystem_data.content_type_id}:${filesystem_data.id}`,
+            {}).then(action_data => {
+              filesystem = filesystem_data;
+              angular.element('html').injector().get('pageTitle').set('Configuration - File Systems - %s'.sprintf(filesystem.label));
 
-          /* FS summary fields */
-          $('#ost_count').html(filesystem.osts.length);
-          $('#mdt_count').html(filesystem.mdts.length);
-          $('#mgs_name')
-            .html(
-            detail(
-              RouteUtils.extract_api_id(filesystem.mgt.primary_server),
-              filesystem.mgt.primary_server_name
-            )
-            );
-          $('#fs_alerts').html(LiveObject.alertLabel(filesystem));
-          $('#fs_name').html(filesystem.name);
+              /* FS summary fields */
+              $('#ost_count').html(filesystem.osts.length);
+              $('#mdt_count').html(filesystem.mdts.length);
+              $('#mgs_name')
+                .html(
+                detail(
+                  RouteUtils.extract_api_id(filesystem.mgt.primary_server),
+                  filesystem.mgt.primary_server_name
+                )
+                );
+              $('#fs_alerts').html(LiveObject.alertLabel(filesystem));
+              $('#fs_name').html(filesystem.name);
 
-          var generateCommandDropdown = angular.element('html').injector().get('generateCommandDropdown');
-          var $commandDropdown = generateCommandDropdown.generateDropdown(angular.element('#fs_actions'), filesystem, 'right');
+              const actionDropdown = document.querySelector('#fs_actions div');
 
-          $commandDropdown.after(LiveObject.busyIcon(filesystem));
-
-          // Config param dialog
-          router_instance.conf_param_dialog = conf_param_dialog = ConfParamDialog({
-            object: filesystem,
-            conf_params: filesystem.conf_params,
-            title: 'File System: %s Advanced Settings'.sprintf(filesystem.label)
-          });
-
-          // Monitored filesystems can't have new targets
-          $('#btnNewOST').button('option', 'disabled', filesystem.immutable_state);
-          // Monitored filesystems can't edit conf params
-          $('div#filesystem_detail button.advanced').button('option', 'disabled', filesystem.immutable_state);
-
-          // Free space/inode pie charts
-          function render_charts(filesystem) {
-            $bytes_text.html(
-              "%s/%s".sprintf(
-                formatBytes(filesystem.bytes_total - filesystem.bytes_free),
-                formatBytes(filesystem.bytes_total)
-              )
-            );
-            $inodes_text.html(
-              "%s/%s files".sprintf(
-                formatBigNumber(filesystem.files_total - filesystem.files_free),
-                formatBigNumber(filesystem.files_total)
-              )
-            );
-
-            var free = Math.round(((filesystem.bytes_free) / (filesystem.bytes_total)) * 100);
-            var used = Math.round(100 - free);
-            $("#editfs_space_usage").text(`${used}/${free}`).peity('pie', { colours: ["#bd6961", "#acc474"], width: 100, height: 100 });
-
-            var free = Math.round(((filesystem.files_free) / (filesystem.files_total)) * 100);
-            var used = Math.round(100 - free);
-            $("#editfs_inode_usage").text(`${used}/${free}`).peity('pie', { colours: ["#bd6961", "#acc474"], width: 100, height: 100 });
-
-            $('.peity').css('padding-left', '15px');
-          }
-
-          // wait on data to exists for charts before rendering
-          function get_filesystem_chart_data(delay_seconds) {
-            if (_.isNull(filesystem.bytes_total) || _.isNull(filesystem.files_total)) {
-              setTimeout(
-                function () {
-                  Api.get(filesystem_uri, {},
-                    success_callback = function (filesystem_data) {
-                      filesystem = filesystem_data;
-                      get_filesystem_chart_data(delay_seconds);
-                    },
-                    // ignore the error and stop fetching
-                    // this prevents a 404 on filesystem delete if the stats haven't populated
-                    error_callback = { '404': function () { } },
-                    blocking = false
-                  );
-                },
-                delay_seconds * 1000
+              window.generateCommandDropdown.generateDropdown(
+                actionDropdown, 
+                {
+                  ...filesystem,
+                  available_actions: [...action_data.objects]
+                }, 
+                'right'
               );
-            }
-            else {
-              render_charts(filesystem);
-            }
-          }
 
-          get_filesystem_chart_data(5);
+              $(actionDropdown).after(LiveObject.busyIcon(filesystem));
 
-        });
+              // Config param dialog
+              router_instance.conf_param_dialog = conf_param_dialog = ConfParamDialog({
+                object: filesystem,
+                conf_params: filesystem.conf_params,
+                title: 'File System: %s Advanced Settings'.sprintf(filesystem.label)
+              });
+
+              // Monitored filesystems can't have new targets
+              $('#btnNewOST').button('option', 'disabled', filesystem.immutable_state);
+              // Monitored filesystems can't edit conf params
+              $('div#filesystem_detail button.advanced').button('option', 'disabled', filesystem.immutable_state);
+
+              // Free space/inode pie charts
+              function render_charts(filesystem) {
+                $bytes_text.html(
+                  "%s/%s".sprintf(
+                    formatBytes(filesystem.bytes_total - filesystem.bytes_free),
+                    formatBytes(filesystem.bytes_total)
+                  )
+                );
+                $inodes_text.html(
+                  "%s/%s files".sprintf(
+                    formatBigNumber(filesystem.files_total - filesystem.files_free),
+                    formatBigNumber(filesystem.files_total)
+                  )
+                );
+
+                var free = Math.round(((filesystem.bytes_free) / (filesystem.bytes_total)) * 100);
+                var used = Math.round(100 - free);
+                $("#editfs_space_usage").text(`${used}/${free}`).peity('pie', { colours: ["#bd6961", "#acc474"], width: 100, height: 100 });
+
+                var free = Math.round(((filesystem.files_free) / (filesystem.files_total)) * 100);
+                var used = Math.round(100 - free);
+                $("#editfs_inode_usage").text(`${used}/${free}`).peity('pie', { colours: ["#bd6961", "#acc474"], width: 100, height: 100 });
+
+                $('.peity').css('padding-left', '15px');
+              }
+
+              // wait on data to exists for charts before rendering
+              function get_filesystem_chart_data(delay_seconds) {
+                if (_.isNull(filesystem.bytes_total) || _.isNull(filesystem.files_total)) {
+                  setTimeout(
+                    function () {
+                      Api.get(filesystem_uri, {},
+                        success_callback = function (filesystem_data) {
+                          filesystem = filesystem_data;
+                          get_filesystem_chart_data(delay_seconds);
+                        },
+                        // ignore the error and stop fetching
+                        // this prevents a 404 on filesystem delete if the stats haven't populated
+                        error_callback = { '404': function () { } },
+                        blocking = false
+                      );
+                    },
+                    delay_seconds * 1000
+                  );
+                }
+                else {
+                  render_charts(filesystem);
+                }
+              }
+
+              get_filesystem_chart_data(5);
+            });
+          });
 
       if (!tables) {
         tables = new Tables([
@@ -555,7 +569,9 @@
         </tr>
         <tr>
           <th>Actions:</th>
-          <td id='fs_actions'></td>
+          <td id='fs_actions'>
+            <div />
+          </td>
         </tr>
       </table>
       <p>
