@@ -441,10 +441,13 @@
 
               const actionDropdown = document.querySelector('#fs_actions div');
 
+              let fs = {...filesystem};
+              delete fs.hsm_control_params;
+
               window.generateCommandDropdown.generateDropdown(
                 actionDropdown, 
                 {
-                  ...filesystem,
+                  ...fs,
                   available_actions: [...action_data.objects]
                 }, 
                 'right'
