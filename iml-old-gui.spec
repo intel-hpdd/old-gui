@@ -1,7 +1,7 @@
 %define base_name old-gui
 
 Name:       iml-%{base_name}
-Version:    3.1.1
+Version:    3.1.2
 # Release Start
 Release:    1%{?dist}
 # Release End
