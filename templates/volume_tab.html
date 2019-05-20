@@ -388,7 +388,7 @@
        * @returns {Object} A promise.
        */
       function fetchVolumes () {
-        return $.get('/api/volume?limit=0&category=unused')
+        return $.get('/api/volume/?limit=0&category=unused')
           .then(function (data) {
             data.objects.forEach(decorateVolumeRow);
 
