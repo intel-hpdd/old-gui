@@ -104,9 +104,9 @@ export function generateDropdown(el, record, placement = "left") {
   const uuid = getRandomValue().toString();
   el.id = uuid;
 
-  const { action_dropdown } = window.wasm_bindgen;
+  const { action_dropdown_component } = window.wasm_bindgen;
 
-  const instance = action_dropdown(
+  const instance = action_dropdown_component(
     {
       uuid,
       records: [record],
