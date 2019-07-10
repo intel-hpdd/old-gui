@@ -104,12 +104,12 @@ export function generateDropdown(el, record, placement = "left") {
   const uuid = getRandomValue().toString();
   el.id = uuid;
 
-  const { action_dropdown_component } = window.wasm_bindgen;
+  const { deferred_action_dropdown_component } = window.wasm_bindgen;
 
-  const instance = action_dropdown_component(
+  const instance = deferred_action_dropdown_component(
     {
       uuid,
-      records: [record],
+      record,
       locks: {},
       flag: undefined,
       tooltip_placement: placement,
