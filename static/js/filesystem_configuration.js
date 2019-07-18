@@ -432,6 +432,11 @@ var VolumeChooserStore = function ()
       $.error( 'Method ' +  method + ' does not exist' );
     }
   };
+
+  // Setup stratagem
+  const { stratagem_component } = window.wasm_bindgen;
+
+  stratagem_component(document.getElementById("stratagem-component"));
 })( jQuery );
 
 /* volumeChooser: Filesystem Volume Chooser */
