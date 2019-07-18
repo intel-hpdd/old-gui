@@ -453,6 +453,10 @@
                 'right'
               );
 
+              // Setup stratagem
+              const { stratagem_component } = window.wasm_bindgen;
+              stratagem_component(document.getElementById("stratagem-component"));
+
               $(actionDropdown).after(LiveObject.busyIcon(filesystem));
 
               // Config param dialog
