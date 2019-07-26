@@ -88,7 +88,6 @@ var RouteUtils = function () {
 }();
 
 var routes = {
-  'configureold/filesystem/detail/:id/': 'filesystemDetail',
   'configureold/filesystem/create/': 'filesystemCreate',
   'configureold/:tab/': 'configure',
   'configureold/': 'configureIndex',
@@ -253,14 +252,7 @@ var ChromaRouter = Backbone.Router.extend({
   filesystemPage: function (page) {
     this.configureTab('filesystem');
     $('#filesystem-tab-create').hide();
-    $('#filesystem-tab-detail').hide();
     $('#filesystem-tab-' + page).show();
-  },
-  filesystemDetail: function (id) {
-    if (this.failed_filesystem_admin_check())
-      return;
-    this.filesystemPage('detail');
-    FilesystemDetailView.draw(id, this)
   },
   filesystemCreate: function () {
     if (this.failed_filesystem_admin_check())
