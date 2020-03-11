@@ -144,6 +144,8 @@
 
 <script type='text/javascript'>
           $(document).ready(function () {
+            window.wasm_bindgen = wasm_bindgen;
+
             window.wasm_bindgen("/wasm-components/package_bg.wasm").then(() => {
               $('div.rightpanel').css('visibility', 'hidden');
               Login.init();
